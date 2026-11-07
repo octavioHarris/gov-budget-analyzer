@@ -15,7 +15,9 @@ const stripModules = (src) =>
     .replace(/^export\s+(?=(async\s+)?function|const|let|class)/gm, "");
 const js = order.map((f) => `// ---- ${f}\n${stripModules(read(f))}`).join("\n");
 
-const data = JSON.stringify(JSON.parse(read("data/toronto-budget.json")));
+const index = JSON.parse(read("data/cities/index.json"));
+const cities = Object.fromEntries(index.map((c) => [c.id, JSON.parse(read(`data/cities/${c.file}`))]));
+const data = JSON.stringify({ index, cities });
 let html = read("index.html");
 html = html.replace(/<link rel="stylesheet" href="styles.css">/, () => `<style>\n${read("styles.css")}\n</style>`);
 html = html.replace(

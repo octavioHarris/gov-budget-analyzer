@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Toronto Budget Explained</title>
-  <meta name="description" content="A plain-language look at what changed in Toronto's 2026 city budget: where new money went, what was cut, how the gap was closed, and what it means for your tax bill.">
+  <title>Budget Scorecard</title>
+  <meta name="description" content="Evaluate your city's budget: what you pay differently, where the new money went, whether promises were delivered, and whether it adds up.">
   <style>
 :root {
   color-scheme: light;
@@ -27,6 +27,7 @@
   --neutral-ink: #0b0b0b;
   --critical: #d03b3b;
   --good-text: #006300;
+  --serious-text: #9a3f12;
   --badge-official: #dcefdc; --badge-official-ink: #0d4d0d;
   --badge-derived: #e3ecfa; --badge-derived-ink: #18407a;
   --badge-approx: #fbefd6; --badge-approx-ink: #6b4a00;
@@ -43,7 +44,7 @@
     --grid: #2c2c2a; --axis: #383835; --border: rgba(255,255,255,0.10);
     --accent: #3987e5; --up: #3987e5; --down: #e66767; --cut: #199e70; --reserve: #d95926;
     --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181; --s6: #9085e9;
-    --neutral: #4a4a46; --neutral-ink: #ffffff; --good-text: #0ca30c;
+    --neutral: #4a4a46; --neutral-ink: #ffffff; --good-text: #0ca30c; --serious-text: #ec835a;
     --badge-official: #173b17; --badge-official-ink: #bfe6bf;
     --badge-derived: #172a45; --badge-derived-ink: #bcd4f6;
     --badge-approx: #3d300f; --badge-approx-ink: #f2d999;
@@ -57,7 +58,7 @@
   --grid: #2c2c2a; --axis: #383835; --border: rgba(255,255,255,0.10);
   --accent: #3987e5; --up: #3987e5; --down: #e66767; --cut: #199e70; --reserve: #d95926;
   --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #d55181; --s6: #9085e9;
-  --neutral: #4a4a46; --neutral-ink: #ffffff; --good-text: #0ca30c;
+  --neutral: #4a4a46; --neutral-ink: #ffffff; --good-text: #0ca30c; --serious-text: #ec835a;
   --badge-official: #173b17; --badge-official-ink: #bfe6bf;
   --badge-derived: #172a45; --badge-derived-ink: #bcd4f6;
   --badge-approx: #3d300f; --badge-approx-ink: #f2d999;
@@ -257,6 +258,86 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-sp
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 @media (forced-colors: active) { .bar-up, .bar-down, .bar-cut, .bar-reserve { fill: CanvasText; } }
 
+/* ---------- evaluation layout additions ---------- */
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.city-pick select { border: 1px solid var(--border); background: var(--surface); color: var(--ink); border-radius: 8px; height: 36px; padding: 0 8px; font: inherit; font-size: .9rem; }
+.stack { display: grid; gap: 16px; min-width: 0; }
+.split-even { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); margin-top: 0; }
+@media (max-width: 880px) { .split-even { grid-template-columns: 1fr; } }
+
+.tile-link { color: inherit; text-decoration: none; transition: border-color .15s, transform .15s; }
+.tile-link:hover { border-color: var(--accent); }
+.tile-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.steps { list-style: none; padding: 0; margin: 20px 0 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.steps a { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: var(--ink-2); font-size: .9rem; padding: 6px 12px 6px 6px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); }
+.steps a:hover { color: var(--ink); border-color: var(--accent); }
+.steps b { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: var(--ink); color: var(--surface); font-size: .75rem; }
+
+.explainer { margin-top: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 20px; }
+.explainer summary { cursor: pointer; font-weight: 600; }
+.explainer[open] summary { margin-bottom: 10px; }
+
+.detail-h { margin: 16px 0 8px; font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-2); }
+
+/* status pills: status colour + icon + label, never colour alone */
+.status { display: inline-flex; align-items: center; gap: 5px; font-size: .75rem; font-weight: 650; padding: 2px 9px; border-radius: 999px; white-space: nowrap; border: 1px solid transparent; }
+.st-good { background: color-mix(in srgb, #0ca30c 14%, var(--surface)); color: var(--good-text); border-color: color-mix(in srgb, #0ca30c 35%, transparent); }
+.st-serious { background: color-mix(in srgb, #ec835a 18%, var(--surface)); color: var(--serious-text); border-color: color-mix(in srgb, #ec835a 45%, transparent); }
+.st-critical { background: color-mix(in srgb, #d03b3b 14%, var(--surface)); color: var(--critical); border-color: color-mix(in srgb, #d03b3b 40%, transparent); }
+.st-neutral { background: var(--surface-2); color: var(--ink-2); border-color: var(--border); }
+
+.promise-summary { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
+.ps { display: flex; align-items: baseline; gap: 8px; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--border); }
+.ps-n { font-size: 1.6rem; font-weight: 700; line-height: 1; }
+.ps-l { font-size: .85rem; font-weight: 600; }
+
+.promises { list-style: none; padding: 0; margin: 8px 0 0; }
+.promises > li { display: grid; grid-template-columns: 9.5rem 1fr; gap: 12px; align-items: start; padding: 12px 0; border-bottom: 1px solid var(--grid); }
+.promises > li:last-child { border-bottom: 0; }
+.promises .promise-text { font-weight: 600; margin-bottom: 2px; }
+.promises .src-links { margin: 4px 0 0; }
+.promises-compact > li { grid-template-columns: auto 1fr; padding: 6px 0; font-size: .92rem; border: 0; }
+@media (max-width: 520px) { .promises > li { grid-template-columns: 1fr; gap: 6px; } .promises > li .status { justify-self: start; } }
+
+.outcomes { display: grid; gap: 12px; }
+.outcome { background: var(--surface-2); border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; }
+.outcomes .outcome { margin-bottom: 0; }
+.outcome-prog { font-size: .75rem; font-weight: 650; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-2); }
+.outcome-metric { font-weight: 600; margin: 2px 0 8px; }
+.outcome-vals { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-bottom: 8px; }
+.ov { display: flex; flex-direction: column; }
+.ov-n { font-size: 1.35rem; font-weight: 650; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.ov-p { font-size: .75rem; color: var(--muted); }
+.ov-arrow { color: var(--muted); }
+.outcome p { margin-bottom: 4px; }
+.dir { font-size: .8rem; font-weight: 650; padding: 2px 8px; border-radius: 999px; background: var(--surface); }
+.dir-good { color: var(--good-text); }
+.dir-bad { color: var(--critical); }
+.dir-flat { color: var(--ink-2); font-weight: 500; }
+
+.verdict { display: flex; flex-wrap: wrap; gap: 6px; }
+.verdict button { font: inherit; font-size: .9rem; border: 1px solid var(--axis); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 6px 12px; cursor: pointer; }
+.verdict button:hover { border-color: var(--accent); }
+.verdict button[aria-pressed="true"] { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+.verdict button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.verdict-compact button { padding: 4px 10px; font-size: .82rem; }
+@media (max-width: 520px) { .verdict-compact .v-label { display: none; } .verdict-compact button { padding: 6px 12px; font-size: 1rem; } }
+.verdict-box { margin: 16px 0 8px; padding: 14px; border: 1px dashed var(--axis); border-radius: 12px; }
+.verdict-box .detail-h { margin-top: 0; }
+
+.verdict-list { list-style: none; padding: 0; margin: 0; }
+.verdict-list li { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--grid); flex-wrap: wrap; }
+.verdict-list li:last-child { border-bottom: 0; }
+.vl-name { display: flex; flex-direction: column; min-width: 10rem; }
+
+.score-tally { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 8px; margin: 10px 0 12px; }
+.score-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+.btn { font: inherit; font-size: .92rem; font-weight: 600; border: 1px solid var(--ink); background: var(--ink); color: var(--surface); border-radius: 10px; padding: 8px 14px; cursor: pointer; }
+.btn-ghost { background: transparent; color: var(--ink); border-color: var(--axis); }
+.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (min-width: 881px) { #scoreSummary { position: sticky; top: 72px; } }
+
 </style>
 </head>
 <body>
@@ -266,17 +347,21 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-sp
     <div class="wrap header-row">
       <div class="brand">
         <span class="brand-mark" aria-hidden="true"></span>
-        <span>Toronto Budget Explained</span>
+        <span id="brandName">Budget Scorecard</span>
       </div>
       <nav class="toc" aria-label="Sections">
-        <a href="#changes">What changed</a>
-        <a href="#gap">How it balanced</a>
-        <a href="#you">Your bill</a>
-        <a href="#money">Money in</a>
-        <a href="#when">When</a>
-        <a href="#next">2027</a>
+        <a href="#pay">You pay</a>
+        <a href="#where">Where it went</a>
+        <a href="#deliver">Delivered?</a>
+        <a href="#sustain">Adds up?</a>
+        <a href="#scorecard">Your scorecard</a>
+        <a href="#when">Timeline</a>
         <a href="#sources">Sources</a>
       </nav>
+      <label class="city-pick" id="cityPickWrap" hidden>
+        <span class="sr-only">City</span>
+        <select id="cityPick"></select>
+      </label>
       <button class="theme-toggle" type="button" id="themeToggle" aria-label="Toggle dark mode"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
     </div>
   </header>
@@ -284,121 +369,138 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-sp
   <main id="main">
     <!-- HERO -->
     <section class="hero wrap" aria-labelledby="hero-title">
-      <p class="eyebrow" id="statusLine">2026 budget · final</p>
-      <h1 id="hero-title">What changed in Toronto's 2026 budget, in five minutes.</h1>
-      <p class="lede">
-        The City spends about <strong>$18.9 billion</strong> a year to run services. Most of it is the same as
-        last year. This page focuses on the part that <em>changed</em>: which services got more money, which got
-        less, how a $1.34 billion hole was filled, and what it costs you.
-      </p>
+      <p class="eyebrow" id="statusLine"></p>
+      <h1 id="hero-title"></h1>
+      <p class="lede" id="heroLede"></p>
       <div class="tiles" id="heroTiles"></div>
+      <ol class="steps" aria-label="How to use this page">
+        <li><a href="#pay"><b>1</b> What you pay</a></li>
+        <li><a href="#where"><b>2</b> Where it went</a></li>
+        <li><a href="#deliver"><b>3</b> Did it deliver?</a></li>
+        <li><a href="#sustain"><b>4</b> Does it add up?</a></li>
+        <li><a href="#scorecard"><b>5</b> Your verdict</a></li>
+      </ol>
     </section>
 
-    <!-- CHANGES -->
-    <section class="band" id="changes" aria-labelledby="changes-title">
+    <!-- 1. PAY -->
+    <section class="band" id="pay" aria-labelledby="pay-title">
       <div class="wrap">
         <div class="section-head">
-          <p class="kicker">1 · The deltas</p>
-          <h2 id="changes-title">Who got more, who got less</h2>
-          <p class="section-sub" id="changesSub">Change in each service's City-funded (net) budget, 2025 → 2026. Tap a bar for details.</p>
+          <p class="kicker">1 · What you pay</p>
+          <h2 id="pay-title">What you're paying differently</h2>
+          <p class="section-sub" id="paySub"></p>
         </div>
-
-        <div class="controls" role="group" aria-label="Chart options">
-          <div class="seg" role="radiogroup" aria-label="Show change as">
-            <button type="button" role="radio" aria-checked="true" data-measure="abs">Dollars</button>
-            <button type="button" role="radio" aria-checked="false" data-measure="pct">Percent</button>
+        <div class="split split-wide">
+          <div class="card">
+            <form class="calc" id="calc" onsubmit="return false">
+              <label for="assess" id="assessLabel">Assessed value</label>
+              <div class="input-dollar">
+                <span aria-hidden="true">$</span>
+                <input id="assess" inputmode="numeric" autocomplete="off" aria-describedby="assessHelp">
+              </div>
+              <p id="assessHelp" class="muted small"></p>
+              <div id="binWrap">
+                <label for="bin">Garbage bin size</label>
+                <select id="bin"></select>
+              </div>
+            </form>
+            <div id="calcOut" class="calc-out" aria-live="polite"></div>
           </div>
-          <div class="seg" role="radiogroup" aria-label="View">
-            <button type="button" role="radio" aria-checked="true" data-view="chart">Chart</button>
-            <button type="button" role="radio" aria-checked="false" data-view="table">Table</button>
-          </div>
-        </div>
-
-        <div class="card chart-card">
-          <div id="deltaChart" class="chart" aria-live="polite"></div>
-          <div id="deltaTable" class="table-wrap" hidden></div>
-          <p class="chart-foot" id="deltaFoot"></p>
-        </div>
-
-        <div class="split">
-          <div class="card" id="programDetail" aria-live="polite"></div>
-          <div class="card callout">
-            <h3>How to read "net"</h3>
-            <p id="netDef"></p>
-            <p class="muted small">Inflation alone is roughly 2–3% a year, so a small increase can still mean a service is doing the same or less in real terms.</p>
-            <div class="legend-badges">
-              <span class="badge badge-official">Official</span> both years from City budget documents
-              <br><span class="badge badge-derived">Derived</span> 2025 back-calculated from the change the City reported
-              <br><span class="badge badge-approx">Approx.</span> rounded figures from news coverage
+          <div class="stack">
+            <div class="card" id="householdCompare"></div>
+            <div class="card">
+              <h3 id="taxHistoryTitle">Property tax increases</h3>
+              <p class="muted small">Total increase each year, including any dedicated levy.</p>
+              <div id="taxHistory" class="chart"></div>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- GAP -->
-    <section class="wrap section" id="gap" aria-labelledby="gap-title">
+    <!-- 2. WHERE -->
+    <section class="wrap section" id="where" aria-labelledby="where-title">
       <div class="section-head">
-        <p class="kicker">2 · Cuts &amp; savings</p>
-        <h2 id="gap-title">How a $1.34 billion hole was filled</h2>
+        <p class="kicker">2 · Where it went</p>
+        <h2 id="where-title">Where the new money went</h2>
+        <p class="section-sub" id="whereSub"></p>
+      </div>
+
+      <div class="controls" role="group" aria-label="Chart options">
+        <div class="seg" role="radiogroup" aria-label="Show change as">
+          <button type="button" role="radio" aria-checked="true" data-measure="abs">Total $</button>
+          <button type="button" role="radio" aria-checked="false" data-measure="hh">Per household</button>
+          <button type="button" role="radio" aria-checked="false" data-measure="pct">Percent</button>
+        </div>
+        <div class="seg" role="radiogroup" aria-label="View">
+          <button type="button" role="radio" aria-checked="true" data-view="chart">Chart</button>
+          <button type="button" role="radio" aria-checked="false" data-view="table">Table</button>
+        </div>
+      </div>
+
+      <div class="split split-even">
+        <div class="card chart-card">
+          <div id="deltaChart" class="chart" aria-live="polite"></div>
+          <div id="deltaTable" class="table-wrap" hidden></div>
+          <p class="chart-foot" id="deltaFoot"></p>
+        </div>
+        <div class="card" id="programDetail" aria-live="polite"></div>
+      </div>
+      <details class="explainer">
+        <summary>How to read these numbers</summary>
+        <p id="netDef"></p>
+        <p>Inflation alone is roughly 2–3% a year, so a small increase can still mean a service is doing the same or less in real terms.</p>
+        <p class="legend-badges">
+          <span class="badge badge-official">Official</span> both years from government budget documents ·
+          <span class="badge badge-derived">Derived</span> earlier year back-calculated from the change the government reported ·
+          <span class="badge badge-approx">Approx.</span> rounded figures from news coverage
+        </p>
+      </details>
+    </section>
+
+    <!-- 3. DELIVER -->
+    <section class="band" id="deliver" aria-labelledby="deliver-title">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="kicker">3 · Did it deliver?</p>
+          <h2 id="deliver-title">Promises and results</h2>
+          <p class="section-sub">What the budget said it would do, whether it happened, and whether the services got measurably better. "Not yet verified" means we couldn't find public evidence either way; it is not the same as "broken."</p>
+        </div>
+        <div class="promise-summary" id="promiseSummary"></div>
+        <div class="split split-even">
+          <div class="card">
+            <h3>Budget promises</h3>
+            <ul class="promises" id="promiseList"></ul>
+          </div>
+          <div class="card">
+            <h3>Service results</h3>
+            <p class="muted small">Latest published measures for services that got more money. Many results lag the budget by a year or more.</p>
+            <div id="outcomeList" class="outcomes"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. SUSTAIN -->
+    <section class="wrap section" id="sustain" aria-labelledby="sustain-title">
+      <div class="section-head">
+        <p class="kicker">4 · Does it add up?</p>
+        <h2 id="sustain-title">How it was balanced, and whether it lasts</h2>
         <p class="section-sub" id="gapSub"></p>
       </div>
       <div class="split split-wide">
         <div class="card">
+          <h3 id="gapTitle">How the gap was closed</h3>
           <div id="gapChart" class="chart"></div>
           <p class="chart-foot" id="gapFoot"></p>
         </div>
-        <div class="card callout">
-          <h3>Why this matters</h3>
-          <p>
-            Two kinds of tools closed the gap. <strong>Savings</strong> (cuts, efficiencies, hiring freezes) are
-            usually permanent. <strong>Reserve draws</strong> spend money the City had saved up. They work for one
-            year, but the same hole comes back the next year unless something else fills it.
-          </p>
-          <p id="gapReserveShare"></p>
+        <div class="stack">
+          <div class="card" id="inYear"></div>
+          <div class="card" id="outlook"></div>
         </div>
       </div>
-    </section>
-
-    <!-- YOU -->
-    <section class="band" id="you" aria-labelledby="you-title">
-      <div class="wrap">
-        <div class="section-head">
-          <p class="kicker">3 · Your wallet</p>
-          <h2 id="you-title">What it means for your bill</h2>
-          <p class="section-sub">Enter your home's assessed value from your MPAC notice (Toronto still uses 2016 values). Renters pay this indirectly through rent.</p>
-        </div>
-        <div class="split split-wide">
-          <div class="card">
-            <form class="calc" id="calc" onsubmit="return false">
-              <label for="assess">Assessed value</label>
-              <div class="input-dollar">
-                <span aria-hidden="true">$</span>
-                <input id="assess" inputmode="numeric" autocomplete="off" value="692,140" aria-describedby="assessHelp">
-              </div>
-              <p id="assessHelp" class="muted small">Toronto's average home is assessed at $692,140.</p>
-              <label for="bin">Garbage bin size</label>
-              <select id="bin"></select>
-            </form>
-            <div id="calcOut" class="calc-out" aria-live="polite"></div>
-          </div>
-          <div class="card">
-            <h3>Property tax increases under Mayor Chow</h3>
-            <p class="muted small">Total increase each year, including the 1.5% City Building Fund levy for transit and housing.</p>
-            <div id="taxHistory" class="chart"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- MONEY IN -->
-    <section class="wrap section" id="money" aria-labelledby="money-title">
-      <div class="section-head">
-        <p class="kicker">4 · Money in</p>
-        <h2 id="money-title">Where the $18.9 billion comes from</h2>
-        <p class="section-sub">Property tax pays for less than a third of the City's operating budget.</p>
-      </div>
-      <div class="card">
+      <div class="card" style="margin-top:16px">
+        <h3 id="revenueTitle">Where the money comes from</h3>
         <div id="revenueBar"></div>
         <ul id="revenueLegend" class="rev-legend"></ul>
         <p class="chart-foot" id="revenueFoot"></p>
@@ -406,37 +508,40 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-sp
       <div class="tiles tiles-3" id="capitalTiles"></div>
     </section>
 
-    <!-- WHEN -->
-    <section class="band" id="when" aria-labelledby="when-title">
+    <!-- 5. SCORECARD -->
+    <section class="band" id="scorecard" aria-labelledby="scorecard-title">
       <div class="wrap">
         <div class="section-head">
-          <p class="kicker">5 · Timing</p>
-          <h2 id="when-title">When decisions were made, and when you feel them</h2>
-          <p class="section-sub">How the budget moved from staff to Mayor to Council, and when the changes actually reach residents.</p>
+          <p class="kicker">5 · Your verdict</p>
+          <h2 id="scorecard-title">Your scorecard</h2>
+          <p class="section-sub">Rate each service's change, either here or in "Where it went." Your ratings stay in this browser and are never sent anywhere.</p>
         </div>
-        <div class="controls" role="group" aria-label="Filter timeline">
-          <div class="seg" role="radiogroup" aria-label="Timeline filter" id="tlFilter">
-            <button type="button" role="radio" aria-checked="true" data-kind="all">All</button>
-            <button type="button" role="radio" aria-checked="false" data-kind="process">Decisions</button>
-            <button type="button" role="radio" aria-checked="false" data-kind="effect">Takes effect</button>
-            <button type="button" role="radio" aria-checked="false" data-kind="tracking">Check-ups</button>
-            <button type="button" role="radio" aria-checked="false" data-kind="upcoming">Coming up</button>
+        <div class="split split-wide">
+          <div class="card">
+            <ul class="verdict-list" id="verdictList"></ul>
           </div>
+          <div class="card" id="scoreSummary" aria-live="polite"></div>
         </div>
-        <ol class="timeline" id="timeline"></ol>
       </div>
     </section>
 
-    <!-- NEXT -->
-    <section class="wrap section" id="next" aria-labelledby="next-title">
+    <!-- TIMELINE -->
+    <section class="wrap section" id="when" aria-labelledby="when-title">
       <div class="section-head">
-        <p class="kicker">6 · Looking ahead</p>
-        <h2 id="next-title">Is it on track, and what's coming in 2027?</h2>
+        <p class="kicker">Timeline</p>
+        <h2 id="when-title">When decisions were made, and when you feel them</h2>
+        <p class="section-sub" id="processNote"></p>
       </div>
-      <div class="split split-wide">
-        <div class="card" id="inYear"></div>
-        <div class="card" id="outlook"></div>
+      <div class="controls" role="group" aria-label="Filter timeline">
+        <div class="seg" role="radiogroup" aria-label="Timeline filter" id="tlFilter">
+          <button type="button" role="radio" aria-checked="true" data-kind="all">All</button>
+          <button type="button" role="radio" aria-checked="false" data-kind="process">Decisions</button>
+          <button type="button" role="radio" aria-checked="false" data-kind="effect">Takes effect</button>
+          <button type="button" role="radio" aria-checked="false" data-kind="tracking">Check-ups</button>
+          <button type="button" role="radio" aria-checked="false" data-kind="upcoming">Coming up</button>
+        </div>
       </div>
+      <ol class="timeline" id="timeline"></ol>
     </section>
 
     <!-- SOURCES -->
@@ -447,17 +552,10 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-sp
           <h2 id="sources-title">Where every number comes from</h2>
         </div>
         <div class="card prose">
+          <p id="methodNote"></p>
           <p>
-            Figures come from City of Toronto budget documents (Budget Notes, the Mayor's Budget Report, Council
-            decisions), cross-checked against news coverage. Program-level numbers are <strong>net operating
-            budgets</strong>, meaning the part paid by City revenue after a program's own fares, fees and grants.
-            The 13 programs shown are the large, resident-facing services; the full budget also includes debt
-            payments, corporate accounts and smaller divisions not shown here.
-          </p>
-          <p>
-            This is an independent, non-partisan explainer, not an official City product. If you spot an error,
-            please open an issue on the project's repository. Each number on the page links to the document it
-            came from below.
+            This is an independent, non-partisan explainer, not an official government product. Ratings on this
+            page are yours alone. If you spot an error, please open an issue on the project's repository.
           </p>
           <ul class="source-list" id="sourceList"></ul>
         </div>
@@ -466,13 +564,11 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-sp
   </main>
 
   <footer class="site-footer">
-    <div class="wrap">
-      <span id="footUpdated"></span>
-    </div>
+    <div class="wrap"><span id="footUpdated"></span></div>
   </footer>
 
   <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
-  <script>window.__BUDGET_DATA__ = {"meta":{"city":"Toronto","baseYear":2025,"compareYear":2026,"currency":"CAD","lastUpdated":"2026-11-07","status":"2026 budget final (approved by City Council 2026-02-10). 2027 budget not yet released.","units":"Program figures are in millions of dollars ($M) unless noted.","netDefinition":"Net budget = what a program spends (gross) minus its own revenue (fares, provincial/federal grants, user fees). The net amount is what the City must cover from property tax and city-wide revenues such as the land transfer tax."},"headline":{"operatingTotalB":18.9,"taxSupportedGrossB":16.61,"rateSupportedGrossB":2.25,"taxSupportedNetB":5.8,"capital10yrB":63.1,"capital2026B":5.2,"openingGapM":1340,"propertyTaxIncreasePct":2.2,"propertyTaxBasePct":0.7,"cityBuildingLevyPct":1.5,"avgHomeAssessment":692140,"avgHomeMunicipalTax2026":4252,"avgHomeIncrease2026":91.53,"sources":["s_final_release","s_launch","s_mayor_report","s_cp24_pocket"]},"taxHistory":[{"year":2024,"totalPct":9.5,"basePct":8,"levyPct":1.5,"avgHomeIncrease":338,"mayor":"Chow","sources":["s_launch_release"]},{"year":2025,"totalPct":6.9,"basePct":5.4,"levyPct":1.5,"avgHomeIncrease":268,"mayor":"Chow","sources":["s_launch_release"]},{"year":2026,"totalPct":2.2,"basePct":0.7,"levyPct":1.5,"avgHomeIncrease":91.53,"mayor":"Chow","sources":["s_launch_release","s_cp24_pocket"]}],"programs":[{"id":"ttc","name":"TTC (transit)","short":"TTC","group":"Transit & roads","what":"Subway, streetcar, bus and Wheel-Trans service.","net":{"2025":1386,"2026":1480},"basis":"approx","basisNote":"Reported as roughly $1.48B net, about $94M more than 2025. 2025 recommended net was $1.387B.","highlights":["Fares frozen for a third straight year.","Fare cap: ride free after 47 paid rides a month starting September 2026; planned to drop to 40 rides in 2027.","$35.0M drawn from a TTC reserve to cover $34.4M in lower-than-expected fare revenue.","$1.8M pilot putting Toronto Community Crisis Service workers on the TTC."],"sources":["s_cbc_council","s_ttc_notes","s_ttc_2025","s_tpra_note"]},{"id":"police","name":"Toronto Police Service","short":"Police","group":"Emergency services","what":"Policing, investigations, 911 police response.","net":{"2025":1339,"2026":1432.9},"gross2026":1704.3,"basis":"official","basisNote":"City Budget Notes: 2026 net $1,432.9M, $93.8M (7.0%) above 2025.","highlights":["$50.7M for the new police collective agreement (pay raises).","$21.9M for higher benefit costs.","$20.5M for the multi-year hiring plan (360 officers hired in 2026; about 143 net new after retirements)."],"sources":["s_tps_notes","s_cbc_police","s_mayor_report","s_spt"]},{"id":"paramedics","name":"Paramedic Services","short":"Paramedics","group":"Emergency services","what":"Ambulances and 24/7 emergency medical response.","net":{"2025":140.258,"2026":175.187},"gross2026":451.282,"basis":"derived","basisNote":"2026 net from Budget Notes; 2025 calculated from the reported +$34.929M (+24.9%) change.","highlights":["Largest percentage increase of any major program (+24.9%).","Part of 258 new emergency-services positions aimed at faster response times."],"sources":["s_paramedic","s_council","s_spt"]},{"id":"fire","name":"Fire Services","short":"Fire","group":"Emergency services","what":"Firefighting, rescue, fire prevention and inspections.","net":{"2025":549,"2026":558.9},"gross2026":587.874,"basis":"derived","basisNote":"2026 net $558.9M from Budget Notes; 2025 calculated from the reported +1.8% change.","highlights":["$41M in the capital plan for equipment, including two new high-rise trucks."],"sources":["s_fire","s_mayor_report","s_launch"]},{"id":"shelter","name":"Shelter & Support Services","short":"Shelters","group":"Housing & homelessness","what":"Emergency shelters, encampment response, drop-ins, homelessness prevention.","net":{"2025":219.875,"2026":235.141},"gross2026":786.068,"basis":"derived","basisNote":"2026 net from Budget Notes; 2025 calculated from the reported +$15.266M (+6.9%) change.","highlights":["$200M drawn from a shelter reserve to cover provincial funding expected under the City-Province 'New Deal'.","Council added $0.1M for drop-in centre supplies."],"sources":["s_tsss","s_council"]},{"id":"housing","name":"Housing Secretariat","short":"Housing Secretariat","group":"Housing & homelessness","what":"Affordable housing programs, rent supports, social housing administration.","net":{"2025":581.876,"2026":597.635},"gross2026":866.632,"basis":"derived","basisNote":"2026 net from Budget Notes; 2025 calculated from the reported +$15.759M (+2.7%) change.","highlights":["Council moved $0.185M toward legal services in the Toronto Tenant Support Program."],"sources":["s_housing","s_council"]},{"id":"tchc","name":"Toronto Community Housing (City funding)","short":"Community Housing (TCHC)","group":"Housing & homelessness","what":"City operating subsidy to Canada's largest social housing landlord.","net":{"2025":327.466,"2026":329.985},"gross2026":666.21,"basis":"derived","basisNote":"City operating funding to TCHC per Budget Notes ($329.985M, +$2.519M).","highlights":["$5.9M of subsidy shifted from Toronto Seniors Housing to TCHC (no change to the total)."],"sources":["s_tchc"]},{"id":"tess","name":"Employment & Social Services","short":"Social assistance (TESS)","group":"Community & social services","what":"Ontario Works (social assistance) delivery and employment help.","net":{"2025":90.499,"2026":100.279},"basis":"official","basisNote":"2025 and 2026 nets from each year's Budget Notes / Council decision. Change calculated.","highlights":[],"sources":["s_tess26","s_tess25","s_council"]},{"id":"children","name":"Children's Services","short":"Children's Services","group":"Community & social services","what":"Child care subsidies, $10-a-day child care system management.","net":{"2025":99.783,"2026":101.6},"basis":"derived","basisNote":"2026 net from Budget Notes; 2025 calculated from the reported +$1.817M (+1.8%) change.","highlights":["Gross spending (mostly provincial/federal child-care money) falls about 5.7%, from roughly $1.68B to $1.58B, even as the City's own share rises slightly."],"sources":["s_children","s_staff_appendix"]},{"id":"health","name":"Toronto Public Health","short":"Public Health","group":"Community & social services","what":"Disease prevention, inspections, student nutrition, harm reduction.","net":{"2025":93.99,"2026":103.489},"basis":"derived","basisNote":"2026 net from Program Summary; 2025 calculated from the reported +10.1% change.","highlights":["Student Nutrition Program expanded: about 330,000 students a day in 841 schools (roughly 62,000 more students, 155 more schools)."],"sources":["s_tph","s_final_release","s_mayor_release"]},{"id":"library","name":"Toronto Public Library","short":"Libraries","group":"Community & social services","what":"100 library branches, programs and digital services.","net":{"2025":254.544,"2026":274.378},"basis":"derived","basisNote":"2026 net from Budget Notes; 2025 calculated from the reported +$19.834M (+7.8%) change.","highlights":["All 100 branches open 7 days a week by summer 2026 (17 more branches added to the Open Hours Plan).","Social and crisis support workers expanded to 4 more branches."],"sources":["s_tpl","s_spt"]},{"id":"parks","name":"Parks & Recreation","short":"Parks & Recreation","group":"Community & social services","what":"Parks, community centres, pools, rinks, recreation programs.","net":{"2025":355.4,"2026":375.3},"basis":"derived","basisNote":"2026 net from Budget Notes; 2025 calculated from the reported +$19.9M (+5.6%) change.","highlights":[],"sources":["s_parks"]},{"id":"transportation","name":"Transportation Services","short":"Roads & Transportation","group":"Transit & roads","what":"Roads, sidewalks, traffic signals, snow clearing, cycling infrastructure.","net":{"2025":329.258,"2026":304.212},"basis":"derived","basisNote":"2026 net from Budget Notes; 2025 calculated from the reported -$25.046M (-7.6%) change.","highlights":["The only major program in this list whose City-funded (net) budget went down. The sources we could reach do not explain why; a drop in net can come from cuts or from new revenue (e.g. fees, provincial funding), so check the Budget Notes before calling this a service cut."],"sources":["s_transport"]}],"gapClosing":{"openingGapM":1340,"note":"The City reported a $1.34B gap between what it would cost to keep services running and the revenue it expected. A gap that size would have needed a ~27% property tax increase on its own. The measures below are as reported by different sources and overlap (for example, efficiencies are part of 'reductions and offsets'), so they should not be added together.","measures":[{"label":"Reductions & offsets (all kinds)","amountM":788,"kind":"cut","detail":"Mayor's office total for spending reductions and offsetting revenue.","sources":["s_mayor_release"]},{"label":"Extra reserve draws vs. 2025","amountM":400,"kind":"reserve","detail":"Roughly $400M more taken from City savings (reserves) than the year before. About 9% of the 2026 budget is funded from reserves.","sources":["s_cbc_council"]},{"label":"Temporary 'bridging' from reserves","amountM":323,"kind":"reserve","detail":"One-time reserve money that has to be replaced in future years.","sources":["s_launch"]},{"label":"Shelter reserve draw","amountM":200,"kind":"reserve","detail":"Covers provincial funding the City expects under the 'New Deal' but has not yet received.","sources":["s_tsss"]},{"label":"Line-by-line reviews & hiring freeze","amountM":135,"kind":"cut","detail":"Savings from reviewing each division's spending, plus a freeze on non-essential (non-frontline) hiring that continues through 2026.","sources":["s_mayor_release","s_cp24_pocket"]},{"label":"Permanent efficiencies","amountM":57,"kind":"cut","detail":"Ongoing savings from process, technology and staffing changes.","sources":["s_launch"]},{"label":"TTC reserve draw","amountM":35,"kind":"reserve","detail":"Keeps fares frozen while fare revenue comes in $34.4M lower than planned.","sources":["s_ttc_notes"]}]},"revenue2026":{"totalB":18.9,"note":"Approximate. Shares come from news and City summaries that use slightly different bases; 'Everything else' is the remainder needed to reach the $18.9B total.","parts":[{"label":"Property tax","amountB":5.79,"sources":["s_greenline","s_cbc_council"]},{"label":"Provincial & federal funding","amountB":4.49,"sources":["s_greenline","s_cbc_council"]},{"label":"Reserves (City savings)","amountB":1.7,"sources":["s_launch","s_cbc_council"]},{"label":"Land transfer tax","amountB":0.85,"sources":["s_greenline"]},{"label":"Vacant home & luxury home taxes","amountB":0.25,"sources":["s_greenline"]},{"label":"Everything else (water & garbage rates, TTC fares, user fees, other)","amountB":5.82,"derived":true,"sources":[]}]},"utilityRates2026":{"waterIncreasePct":3.75,"solidWasteIncreasePct":3.75,"garbageBins":[{"size":"Small","fee2026":317.85},{"size":"Medium","fee2026":385.86},{"size":"Large","fee2026":524.06},{"size":"Extra large","fee2026":607.86}],"note":"Single-family annual solid waste fees. 2025 fee derived by removing the 3.75% increase; matches the City's published $11.49–$21.97 increase range.","sources":["s_rates","s_globalnews_launch"]},"capital":{"totalB":63.1,"taxSupportedB":42.6,"rateSupportedB":20.5,"stateOfGoodRepairPct":53,"year2026B":5.2,"unfundedTransitExpansionB":31.7,"note":"Largest 10-year capital plan in City history (2026–2035). Over half goes to repairing what already exists. $31.7B of transit expansion is not funded.","sources":["s_capital","s_budget_summary"]},"inYear":{"asOf":"2026-04-30","taxSupportedProjectedM":-97.4,"rateSupportedProjectedM":32.7,"ttcProjectedM":-64.3,"note":"Snapshot from the City's first 2026 operating variance report (four months). Negative = projected overspend / shortfall by year-end. Later reports may differ.","sources":["s_variance","s_ttc_variance"]},"outlook2027":{"gapLowB":1.1,"gapHighB":1.5,"points":["The City's own outlook projected about a $1.1B shortfall going into 2027.","Including expected reductions in provincial and federal funding, City Hall columnist Matt Elliott estimates about $1.5B.","$323M of 2026 'bridging' money from reserves was one-time and must be replaced.","The TTC fare cap is planned to drop from 47 to 40 rides a month in 2027, which costs fare revenue.","Mayor Olivia Chow was re-elected on October 26, 2026, so the 2027 budget will again be a 'strong mayor' budget she proposes."],"sources":["s_cbc_council","s_elliott","s_launch","s_election"]},"timeline":[{"date":"2025-10","label":"Oct 2025","kind":"process","title":"Public budget consultations","detail":"City asks residents for input before staff build the budget.","sources":["s_consult"]},{"date":"2025-12","label":"Dec 2025","kind":"process","title":"Water & garbage rates set","detail":"Council approves 3.75% increases to water and solid waste rates, ahead of the main budget.","sources":["s_rates"]},{"date":"2025-12-10","label":"Dec 10, 2025","kind":"process","title":"Police board approves $1.43B request","detail":"The Police Service Board approves a 7% increase. Council still has to fund it.","sources":["s_tps_notes"]},{"date":"2026-01-01","label":"Jan 1, 2026","kind":"effect","title":"New water & garbage rates take effect","detail":"Your utility bill goes up 3.75%.","sources":["s_rates"]},{"date":"2026-01-08","label":"Jan 8, 2026","kind":"process","title":"Staff budget launched","detail":"City staff release the $18.9B budget with a 2.2% tax increase and a $1.34B gap to close.","sources":["s_launch_release"]},{"date":"2026-02-02","label":"Feb 2, 2026","kind":"process","title":"Mayor's budget tabled","detail":"Under Ontario's 'strong mayor' rules the Mayor, not Council, proposes the budget. Chow keeps the 2.2% increase and adds money for youth safety and homeless outreach.","sources":["s_cbc_mayor"]},{"date":"2026-02-10","label":"Feb 10, 2026","kind":"process","title":"Council approves the budget","detail":"Council can amend the Mayor's budget (the Mayor can veto; Council needs two-thirds to override). Council adds $2M in service enhancements; tax increase passes 19–5.","sources":["s_final_release","s_spt","s_cbc_council"]},{"date":"2026-04-30","label":"Apr 30, 2026","kind":"tracking","title":"First check-up: $97.4M shortfall projected","detail":"Four months in, the City projects ending the year $97.4M over budget on tax-supported services; the TTC alone projects $64.3M.","sources":["s_variance","s_ttc_variance"]},{"date":"2026-07","label":"Summer 2026","kind":"effect","title":"All libraries open 7 days a week","detail":"Every one of the 100 Toronto Public Library branches open seven days a week.","sources":["s_spt"]},{"date":"2026-09","label":"Sep 2026","kind":"effect","title":"TTC fare cap begins (47 rides)","detail":"After 47 paid rides in a calendar month, the rest of the month's rides are free.","sources":["s_mayor_release","s_cbc_mayor"]},{"date":"2026-10-26","label":"Oct 26, 2026","kind":"process","title":"Municipal election","detail":"Olivia Chow re-elected mayor (about 54% of the vote) over Brad Bradford.","sources":["s_election"]},{"date":"2027-01","label":"Jan 2027 (expected)","kind":"upcoming","title":"2027 staff budget launch","detail":"Expected based on the 2026 calendar. Opening gap estimated at $1.1B–$1.5B.","sources":["s_elliott","s_cbc_council"]},{"date":"2027-02","label":"By Feb 1, 2027 (expected)","kind":"upcoming","title":"Mayor's 2027 budget","detail":"The Mayor must table a budget by February 1 under strong-mayor rules; Council then has 30 days to amend.","sources":["s_budget_process"]},{"date":"2027-06","label":"2027","kind":"upcoming","title":"Fare cap planned to drop to 40 rides","detail":"Part of the multi-year fare-capping plan approved in the 2026 budget.","sources":["s_mayor_release"]}],"sources":{"s_final_release":{"title":"City of Toronto news release: 2026 Budget now final","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/news/city-of-torontos-2026-budget-now-final-focuses-on-affordability-service-stability-and-financial-sustainability/"},"s_launch_release":{"title":"City of Toronto launches 2026 Budget","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/news/city-of-toronto-launches-2026-budget/"},"s_launch":{"title":"2026 Capital and Operating Budget Launch (presentation)","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2026/bu/bgrd/backgroundfile-261523.pdf"},"s_mayor_report":{"title":"Mayor's Budget Report 2026: Operating and Capital Budget","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2026/mpb/bgrd/backgroundfile-264740.pdf"},"s_council":{"title":"Council decision, item 2026.MPB38.1","publisher":"City of Toronto","type":"official","url":"https://secure.toronto.ca/council/agenda-item.do?item=2026.MPB38.1"},"s_budget_summary":{"title":"2026 City of Toronto Budget Summary","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/wp-content/uploads/2026/05/8f04-2026-City-of-Toronto-Budget-Summary.pdf"},"s_staff_appendix":{"title":"2026 Staff Prepared Operating Budget, Appendix 1.1","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2026/bu/bgrd/backgroundfile-261456.pdf"},"s_tps_notes":{"title":"2026 Budget Notes: Toronto Police Service","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2026/bu/bgrd/backgroundfile-261506.pdf"},"s_ttc_notes":{"title":"2026 Budget Notes: Toronto Transit Commission","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2026/bu/bgrd/backgroundfile-261746.pdf"},"s_ttc_2025":{"title":"Recommended 2025 TTC Operating Budget","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2025/bu/bgrd/backgroundfile-252576.pdf"},"s_paramedic":{"title":"2026 Budget Notes: Toronto Paramedic Services","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2026/bu/bgrd/backgroundfile-261037.pdf"},"s_fire":{"title":"2026 Budget Notes: Toronto Fire Services","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2026/bu/bgrd/backgroundfile-261164.pdf"},"s_tsss":{"title":"2026 Budget Notes: Toronto Shelter and Support Services","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2026/bu/bgrd/backgroundfile-261532.pdf"},"s_housing":{"title":"2026 Budget Notes: Housing Secretariat and Housing Development Office","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2026/bu/bgrd/backgroundfile-261369.pdf"},"s_tchc":{"title":"2026 Budget Notes: Toronto Community Housing Corporation","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2026/bu/bgrd/backgroundfile-261373.pdf"},"s_children":{"title":"2026 Budget Notes: Children's Services","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2026/bu/bgrd/backgroundfile-261785.pdf"},"s_tph":{"title":"2026 Program Summary: Toronto Public Health","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/wp-content/uploads/2026/03/86ce-2026-Public-Book-TPH-V1.pdf"},"s_tess26":{"title":"2026 Budget Notes: Toronto Employment & Social Services","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2026/bu/bgrd/backgroundfile-261683.pdf"},"s_tess25":{"title":"2025 Budget Notes: Toronto Employment and Social Services","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2025/bu/bgrd/backgroundfile-251642.pdf"},"s_tpl":{"title":"2026 Budget Notes: Toronto Public Library","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2026/bu/bgrd/backgroundfile-261729.pdf"},"s_parks":{"title":"2026 Budget Notes: Parks and Recreation","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2026/bu/bgrd/backgroundfile-261733.pdf"},"s_transport":{"title":"2026 Budget Notes: Transportation Services","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2026/bu/bgrd/backgroundfile-261731.pdf"},"s_tpra_note":{"title":"2026 Operating Budget Briefing Note: Toronto Poverty Reduction Strategy","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2026/bu/bgrd/backgroundfile-261474.pdf"},"s_variance":{"title":"Operating Variance Report for the Four Months Ended April 30, 2026","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2026/ex/bgrd/backgroundfile-289543.pdf"},"s_ttc_variance":{"title":"TTC Board item 2026.TTC15.8 (financial update)","publisher":"City of Toronto","type":"official","url":"https://secure.toronto.ca/council/agenda-item.do?item=2026.TTC15.8"},"s_rates":{"title":"City approves 2026 interim rates for Toronto Water and Solid Waste","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/news/city-of-toronto-approves-2026-interim-rates-and-fees-for-toronto-water-and-solid-waste-management-services/"},"s_consult":{"title":"2026 Budget Consultations presentation (Oct 2025)","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/wp-content/uploads/2025/10/8fd0-2026-Budget-Public-Consultation-Presentation.pdf"},"s_budget_process":{"title":"City of Toronto 2026 budget process","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/news/city-of-toronto-2026-budget-process"},"s_mayor_release":{"title":"Mayor Chow's 2026 budget delivers more affordability","publisher":"Office of Mayor Olivia Chow","type":"political","url":"https://www.mayoroliviachow.ca/mayor_chow_2026_budget"},"s_cbc_council":{"title":"Toronto city council approves 2026 budget that Chow says prioritizes affordability","publisher":"CBC News","type":"news","url":"https://www.cbc.ca/news/canada/toronto/council-debate-budget-2026-9.7081563"},"s_cbc_mayor":{"title":"Toronto mayor's 2026 budget keeps 2.2% property tax increase","publisher":"CBC News","type":"news","url":"https://www.cbc.ca/news/canada/toronto/toronto-mayors-budget-2026-9.7068896"},"s_cbc_police":{"title":"Toronto police request $93M budget increase in 2026","publisher":"CBC News","type":"news","url":"https://www.cbc.ca/news/canada/toronto/toronto-police-budget-9.7047573"},"s_cp24_pocket":{"title":"'A very affordable budget': how Toronto's budget will impact your pocketbook","publisher":"CP24","type":"news","url":"https://www.cp24.com/local/toronto/2026/01/08/a-very-affordable-budget-a-look-at-all-the-ways-torontos-budget-will-impact-your-pocketbook/"},"s_globalnews_launch":{"title":"Toronto tables budget with 2.2% tax increase to kick off election year","publisher":"Global News","type":"news","url":"https://globalnews.ca/news/11603755/toronto-2026-budget-begins/"},"s_greenline":{"title":"Where does the City of Toronto get its money?","publisher":"The Green Line","type":"news","url":"https://thegreenline.to/stories/city-of-toronto-money-budget/"},"s_capital":{"title":"Toronto council adopts $63.1 billion capital plan as part of 2026 budget","publisher":"Ontario Construction News","type":"news","url":"https://ontarioconstructionnews.com/toronto-council-adopts-63-1-billion-capital-plan-as-part-of-2026-budget"},"s_spt":{"title":"Final 2026 City Budget Makes Targeted Investments in Key Services","publisher":"Social Planning Toronto","type":"advocacy","url":"https://www.socialplanningtoronto.org/final_2026_city_budget_makes_targeted_investments_in_key_services"},"s_elliott":{"title":"Matt Elliott (City Hall Watcher) on the 2027 shortfall","publisher":"Matt Elliott (Bluesky)","type":"commentary","url":"https://bsky.app/profile/graphicmatt.com"},"s_election":{"title":"2026 Toronto mayoral election","publisher":"Wikipedia","type":"reference","url":"https://en.wikipedia.org/wiki/2026_Toronto_mayoral_election"}}};</script>
+  <script>window.__BUDGET_DATA__ = {"index":[{"id":"toronto","name":"Toronto","region":"Ontario, Canada","file":"toronto.json"}],"cities":{"toronto":{"meta":{"id":"toronto","cityName":"Toronto","jurisdiction":"City of Toronto","province":"Ontario","country":"Canada","locale":"en-CA","currency":"CAD","leader":{"title":"Mayor","name":"Olivia Chow","since":"2023-07","note":"Re-elected October 26, 2026"},"households":1160890,"householdsNote":"Private households, 2021 Census","baseYear":2025,"compareYear":2026,"lastUpdated":"2026-11-07","status":"2026 budget final (approved by City Council 2026-02-10). 2027 budget not yet released.","units":"Program figures are in millions of dollars ($M) unless noted.","netDefinition":"Net budget = what a program spends (gross) minus its own revenue (fares, provincial/federal grants, user fees). The net amount is what the City must cover from property tax and city-wide revenues such as the land transfer tax.","propertyTax":{"assessmentLabel":"Assessed value","assessmentHelp":"From your MPAC notice. Toronto still uses 2016 values; the average home is assessed at $692,140.","excludes":"the provincial education tax","levyName":"City Building Fund levy (transit & housing)"},"budgetProcess":"Under Ontario's 'strong mayor' rules the Mayor proposes the budget, Council can amend it, the Mayor can veto amendments, and Council needs a two-thirds vote to override.","sources":["s_census"],"methodNote":"Figures come from City of Toronto budget documents (Budget Notes, the Mayor's Budget Report, Council decisions) and service reports, cross-checked against news coverage. Program figures are net operating budgets: the part paid by City revenue after each program's own fares, fees and grants. The 13 services shown are the large, resident-facing ones; the full budget also includes debt payments, corporate accounts and smaller divisions. Per-household figures divide by the number of private households (2021 Census) to give a sense of scale; they are not what any one household pays."},"headline":{"operatingTotalB":18.9,"taxSupportedGrossB":16.61,"rateSupportedGrossB":2.25,"taxSupportedNetB":5.8,"capital10yrB":63.1,"capitalThisYearB":5.2,"openingGapM":1340,"propertyTaxIncreasePct":2.2,"propertyTaxBasePct":0.7,"cityBuildingLevyPct":1.5,"avgHomeAssessment":692140,"avgHomeMunicipalTax":4252,"avgHomeIncrease":91.53,"sources":["s_final_release","s_launch","s_mayor_report","s_cp24_pocket"]},"taxHistory":[{"year":2024,"totalPct":9.5,"basePct":8,"levyPct":1.5,"avgHomeIncrease":338,"mayor":"Chow","sources":["s_launch_release"]},{"year":2025,"totalPct":6.9,"basePct":5.4,"levyPct":1.5,"avgHomeIncrease":268,"mayor":"Chow","sources":["s_launch_release"]},{"year":2026,"totalPct":2.2,"basePct":0.7,"levyPct":1.5,"avgHomeIncrease":91.53,"mayor":"Chow","sources":["s_launch_release","s_cp24_pocket"]}],"programs":[{"id":"ttc","name":"TTC (transit)","short":"TTC","group":"Transit & roads","what":"Subway, streetcar, bus and Wheel-Trans service.","net":{"2025":1386,"2026":1480},"basis":"approx","basisNote":"Reported as roughly $1.48B net, about $94M more than 2025. 2025 recommended net was $1.387B.","highlights":["Fares frozen for a third straight year.","Fare cap: ride free after 47 paid rides a month starting September 2026; planned to drop to 40 rides in 2027.","$35.0M drawn from a TTC reserve to cover $34.4M in lower-than-expected fare revenue.","$1.8M pilot putting Toronto Community Crisis Service workers on the TTC."],"sources":["s_cbc_council","s_ttc_notes","s_ttc_2025","s_tpra_note"],"outcomes":[{"metric":"Ridership compared with before the pandemic","unit":"%","better":"higher","before":{"period":"Oct 2025","value":78},"after":{"period":"Spring 2026 (year to date)","value":82},"note":"Measured on slightly different bases (point in time vs. year to date), so treat the gain as approximate. Peer systems averaged about 84%.","sources":["s_global_ttc","s_ttc_ceo_apr26"]}]},{"id":"police","name":"Toronto Police Service","short":"Police","group":"Emergency services","what":"Policing, investigations, 911 police response.","net":{"2025":1339,"2026":1432.9},"gross":1704.3,"basis":"official","basisNote":"City Budget Notes: 2026 net $1,432.9M, $93.8M (7.0%) above 2025.","highlights":["$50.7M for the new police collective agreement (pay raises).","$21.9M for higher benefit costs.","$20.5M for the multi-year hiring plan (360 officers hired in 2026; about 143 net new after retirements)."],"sources":["s_tps_notes","s_cbc_police","s_mayor_report","s_spt"],"outcomes":[{"metric":"Average response to the most urgent (Priority 1) calls","unit":"min","better":"lower","before":{"period":"2024","value":17.1,"derived":true},"after":{"period":"2025","value":14.1},"note":"2025 figure from the Chief's Annual Report, which reports a 17.5% drop; 2024 calculated from that. Down from a 23.1-minute average in 2023. No 2026 figure published yet.","sources":["s_tps_annual"]}]},{"id":"paramedics","name":"Paramedic Services","short":"Paramedics","group":"Emergency services","what":"Ambulances and 24/7 emergency medical response.","net":{"2025":140.258,"2026":175.187},"gross":451.282,"basis":"derived","basisNote":"2026 net from Budget Notes; 2025 calculated from the reported +$34.929M (+24.9%) change.","highlights":["Largest percentage increase of any major program (+24.9%).","Part of 258 new emergency-services positions aimed at faster response times."],"sources":["s_paramedic","s_council","s_spt"],"outcomes":[{"metric":"90th-percentile response to life-threatening calls","unit":"min","better":"lower","before":null,"after":{"period":"Latest (2025 budget docs)","value":14.8},"note":"Up 22% since 2019, and fewer than 10% of ambulances were free for about 4 hours a day on average. The 2026 money (94 new positions) is meant to improve this; no 2026 result is published yet.","sources":["s_para25","s_paramedic"]}]},{"id":"fire","name":"Fire Services","short":"Fire","group":"Emergency services","what":"Firefighting, rescue, fire prevention and inspections.","net":{"2025":549,"2026":558.9},"gross":587.874,"basis":"derived","basisNote":"2026 net $558.9M from Budget Notes; 2025 calculated from the reported +1.8% change.","highlights":["$41M in the capital plan for equipment, including two new high-rise trucks."],"sources":["s_fire","s_mayor_report","s_launch"],"outcomes":[]},{"id":"shelter","name":"Shelter & Support Services","short":"Shelters","group":"Housing & homelessness","what":"Emergency shelters, encampment response, drop-ins, homelessness prevention.","net":{"2025":219.875,"2026":235.141},"gross":786.068,"basis":"derived","basisNote":"2026 net from Budget Notes; 2025 calculated from the reported +$15.266M (+6.9%) change.","highlights":["$200M drawn from a shelter reserve to cover provincial funding expected under the City-Province 'New Deal'.","Council added $0.1M for drop-in centre supplies."],"sources":["s_tsss","s_council"],"outcomes":[{"metric":"People who called for a shelter bed and couldn't get one, per night","unit":"people","better":"lower","before":null,"after":{"period":"Jan–Feb 2026","value":31.6},"note":"Average of 30.4 (Jan) and 32.8 (Feb). Counts single adults and couples only; families are not included, so real unmet need is higher. About 9,200 people a night were in shelters.","sources":["s_shelter_referrals"]}]},{"id":"housing","name":"Housing Secretariat","short":"Housing Secretariat","group":"Housing & homelessness","what":"Affordable housing programs, rent supports, social housing administration.","net":{"2025":581.876,"2026":597.635},"gross":866.632,"basis":"derived","basisNote":"2026 net from Budget Notes; 2025 calculated from the reported +$15.759M (+2.7%) change.","highlights":["Council moved $0.185M toward legal services in the Toronto Tenant Support Program."],"sources":["s_housing","s_council"],"outcomes":[]},{"id":"tchc","name":"Toronto Community Housing (City funding)","short":"Community Housing (TCHC)","group":"Housing & homelessness","what":"City operating subsidy to Canada's largest social housing landlord.","net":{"2025":327.466,"2026":329.985},"gross":666.21,"basis":"derived","basisNote":"City operating funding to TCHC per Budget Notes ($329.985M, +$2.519M).","highlights":["$5.9M of subsidy shifted from Toronto Seniors Housing to TCHC (no change to the total)."],"sources":["s_tchc"],"outcomes":[]},{"id":"tess","name":"Employment & Social Services","short":"Social assistance (TESS)","group":"Community & social services","what":"Ontario Works (social assistance) delivery and employment help.","net":{"2025":90.499,"2026":100.279},"basis":"official","basisNote":"2025 and 2026 nets from each year's Budget Notes / Council decision. Change calculated.","highlights":[],"sources":["s_tess26","s_tess25","s_council"],"outcomes":[]},{"id":"children","name":"Children's Services","short":"Children's Services","group":"Community & social services","what":"Child care subsidies, $10-a-day child care system management.","net":{"2025":99.783,"2026":101.6},"basis":"derived","basisNote":"2026 net from Budget Notes; 2025 calculated from the reported +$1.817M (+1.8%) change.","highlights":["Gross spending (mostly provincial/federal child-care money) falls about 5.7%, from roughly $1.68B to $1.58B, even as the City's own share rises slightly."],"sources":["s_children","s_staff_appendix"],"outcomes":[]},{"id":"health","name":"Toronto Public Health","short":"Public Health","group":"Community & social services","what":"Disease prevention, inspections, student nutrition, harm reduction.","net":{"2025":93.99,"2026":103.489},"basis":"derived","basisNote":"2026 net from Program Summary; 2025 calculated from the reported +10.1% change.","highlights":["Student Nutrition Program expanded: about 330,000 students a day in 841 schools (roughly 62,000 more students, 155 more schools)."],"sources":["s_tph","s_final_release","s_mayor_release"],"outcomes":[]},{"id":"library","name":"Toronto Public Library","short":"Libraries","group":"Community & social services","what":"100 library branches, programs and digital services.","net":{"2025":254.544,"2026":274.378},"basis":"derived","basisNote":"2026 net from Budget Notes; 2025 calculated from the reported +$19.834M (+7.8%) change.","highlights":["All 100 branches open 7 days a week by summer 2026 (17 more branches added to the Open Hours Plan).","Social and crisis support workers expanded to 4 more branches."],"sources":["s_tpl","s_spt"],"outcomes":[{"metric":"Sunday visits after all branches opened Sundays","unit":"%","better":"higher","before":null,"after":{"period":"Oct–Dec 2025 vs. 2024","value":50,"prefix":"+"},"note":"Result of the 2025 Sunday-hours expansion, which the 2026 budget extends to seven days a week.","sources":["s_tpl_sundays"]}]},{"id":"parks","name":"Parks & Recreation","short":"Parks & Recreation","group":"Community & social services","what":"Parks, community centres, pools, rinks, recreation programs.","net":{"2025":355.4,"2026":375.3},"basis":"derived","basisNote":"2026 net from Budget Notes; 2025 calculated from the reported +$19.9M (+5.6%) change.","highlights":[],"sources":["s_parks"],"outcomes":[]},{"id":"transportation","name":"Transportation Services","short":"Roads & Transportation","group":"Transit & roads","what":"Roads, sidewalks, traffic signals, snow clearing, cycling infrastructure.","net":{"2025":329.258,"2026":304.212},"basis":"derived","basisNote":"2026 net from Budget Notes; 2025 calculated from the reported -$25.046M (-7.6%) change.","highlights":["The only major program in this list whose City-funded (net) budget went down. The sources we could reach do not explain why; a drop in net can come from cuts or from new revenue (e.g. fees, provincial funding), so check the Budget Notes before calling this a service cut."],"sources":["s_transport"],"outcomes":[]}],"gapClosing":{"openingGapM":1340,"note":"The City reported a $1.34B gap between what it would cost to keep services running and the revenue it expected. A gap that size would have needed a ~27% property tax increase on its own. The measures below are as reported by different sources and overlap (for example, efficiencies are part of 'reductions and offsets'), so they should not be added together.","measures":[{"label":"Reductions & offsets (all kinds)","amountM":788,"kind":"cut","detail":"Mayor's office total for spending reductions and offsetting revenue.","sources":["s_mayor_release"]},{"label":"Extra reserve draws vs. 2025","amountM":400,"kind":"reserve","detail":"Roughly $400M more taken from City savings (reserves) than the year before. About 9% of the 2026 budget is funded from reserves.","sources":["s_cbc_council"]},{"label":"Temporary 'bridging' from reserves","amountM":323,"kind":"reserve","detail":"One-time reserve money that has to be replaced in future years.","sources":["s_launch"]},{"label":"Shelter reserve draw","amountM":200,"kind":"reserve","detail":"Covers provincial funding the City expects under the 'New Deal' but has not yet received.","sources":["s_tsss"]},{"label":"Line-by-line reviews & hiring freeze","amountM":135,"kind":"cut","detail":"Savings from reviewing each division's spending, plus a freeze on non-essential (non-frontline) hiring that continues through 2026.","sources":["s_mayor_release","s_cp24_pocket"]},{"label":"Permanent efficiencies","amountM":57,"kind":"cut","detail":"Ongoing savings from process, technology and staffing changes.","sources":["s_launch"]},{"label":"TTC reserve draw","amountM":35,"kind":"reserve","detail":"Keeps fares frozen while fare revenue comes in $34.4M lower than planned.","sources":["s_ttc_notes"]}]},"revenue":{"totalB":18.9,"note":"Approximate. Shares come from news and City summaries that use slightly different bases; 'Everything else' is the remainder needed to reach the $18.9B total.","parts":[{"label":"Property tax","amountB":5.79,"sources":["s_greenline","s_cbc_council"]},{"label":"Provincial & federal funding","amountB":4.49,"sources":["s_greenline","s_cbc_council"]},{"label":"Reserves (City savings)","amountB":1.7,"sources":["s_launch","s_cbc_council"]},{"label":"Land transfer tax","amountB":0.85,"sources":["s_greenline"]},{"label":"Vacant home & luxury home taxes","amountB":0.25,"sources":["s_greenline"]},{"label":"Everything else (water & garbage rates, TTC fares, user fees, other)","amountB":5.82,"derived":true,"sources":[]}],"year":2026},"utilityRates":{"waterIncreasePct":3.75,"solidWasteIncreasePct":3.75,"garbageBins":[{"size":"Small","fee":317.85},{"size":"Medium","fee":385.86},{"size":"Large","fee":524.06},{"size":"Extra large","fee":607.86}],"note":"Single-family annual solid waste fees. 2025 fee derived by removing the 3.75% increase; matches the City's published $11.49–$21.97 increase range.","sources":["s_rates","s_globalnews_launch"],"year":2026},"capital":{"totalB":63.1,"taxSupportedB":42.6,"rateSupportedB":20.5,"stateOfGoodRepairPct":53,"year2026B":5.2,"note":"Largest 10-year capital plan in City history (2026–2035). Over half goes to repairing what already exists. $31.7B of transit expansion is not funded.","sources":["s_capital","s_budget_summary"],"unfundedB":31.7,"unfundedLabel":"Transit expansion projects with no money attached yet"},"inYear":{"asOf":"2026-04-30","note":"Snapshot from the City's first 2026 operating variance report (four months). Negative = projected overspend / shortfall by year-end. Later reports may differ.","sources":["s_variance","s_ttc_variance"],"lines":[{"label":"Tax-supported services","valueM":-97.4},{"label":"of which TTC","valueM":-64.3},{"label":"Water & garbage","valueM":32.7}],"priorYear":{"label":"Same point-ish last year (June 30, 2025)","valueM":-105.4,"sources":["s_variance25"]}},"timeline":[{"date":"2025-10","label":"Oct 2025","kind":"process","title":"Public budget consultations","detail":"City asks residents for input before staff build the budget.","sources":["s_consult"]},{"date":"2025-12","label":"Dec 2025","kind":"process","title":"Water & garbage rates set","detail":"Council approves 3.75% increases to water and solid waste rates, ahead of the main budget.","sources":["s_rates"]},{"date":"2025-12-10","label":"Dec 10, 2025","kind":"process","title":"Police board approves $1.43B request","detail":"The Police Service Board approves a 7% increase. Council still has to fund it.","sources":["s_tps_notes"]},{"date":"2026-01-01","label":"Jan 1, 2026","kind":"effect","title":"New water & garbage rates take effect","detail":"Your utility bill goes up 3.75%.","sources":["s_rates"]},{"date":"2026-01-08","label":"Jan 8, 2026","kind":"process","title":"Staff budget launched","detail":"City staff release the $18.9B budget with a 2.2% tax increase and a $1.34B gap to close.","sources":["s_launch_release"]},{"date":"2026-02-02","label":"Feb 2, 2026","kind":"process","title":"Mayor's budget tabled","detail":"Under Ontario's 'strong mayor' rules the Mayor, not Council, proposes the budget. Chow keeps the 2.2% increase and adds money for youth safety and homeless outreach.","sources":["s_cbc_mayor"]},{"date":"2026-02-10","label":"Feb 10, 2026","kind":"process","title":"Council approves the budget","detail":"Council can amend the Mayor's budget (the Mayor can veto; Council needs two-thirds to override). Council adds $2M in service enhancements; tax increase passes 19–5.","sources":["s_final_release","s_spt","s_cbc_council"]},{"date":"2026-04-30","label":"Apr 30, 2026","kind":"tracking","title":"First check-up: $97.4M shortfall projected","detail":"Four months in, the City projects ending the year $97.4M over budget on tax-supported services; the TTC alone projects $64.3M.","sources":["s_variance","s_ttc_variance"]},{"date":"2026-07","label":"Summer 2026","kind":"effect","title":"All libraries open 7 days a week (planned)","detail":"Target date for all 100 branches to open seven days a week. Completion not yet confirmed publicly.","sources":["s_tpl_sundays","s_tpl_june26"]},{"date":"2026-09","label":"Sep 2026","kind":"effect","title":"TTC fare cap begins (47 rides)","detail":"Took effect September 1, 2026: after 47 paid rides in a calendar month, the rest of the month's rides are free. Monthly passes ended August 31.","sources":["s_ttc_farecap"]},{"date":"2026-10-26","label":"Oct 26, 2026","kind":"process","title":"Municipal election","detail":"Olivia Chow re-elected mayor (about 54% of the vote) over Brad Bradford.","sources":["s_election"]},{"date":"2027-01","label":"Jan 2027 (expected)","kind":"upcoming","title":"2027 staff budget launch","detail":"Expected based on the 2026 calendar. Opening gap estimated at $1.1B–$1.5B.","sources":["s_elliott","s_cbc_council"]},{"date":"2027-02","label":"By Feb 1, 2027 (expected)","kind":"upcoming","title":"Mayor's 2027 budget","detail":"The Mayor must table a budget by February 1 under strong-mayor rules; Council then has 30 days to amend.","sources":["s_budget_process"]},{"date":"2027-06","label":"2027","kind":"upcoming","title":"Fare cap planned to drop to 40 rides","detail":"Part of the multi-year fare-capping plan approved in the 2026 budget.","sources":["s_mayor_release"]}],"sources":{"s_final_release":{"title":"City of Toronto news release: 2026 Budget now final","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/news/city-of-torontos-2026-budget-now-final-focuses-on-affordability-service-stability-and-financial-sustainability/"},"s_launch_release":{"title":"City of Toronto launches 2026 Budget","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/news/city-of-toronto-launches-2026-budget/"},"s_launch":{"title":"2026 Capital and Operating Budget Launch (presentation)","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2026/bu/bgrd/backgroundfile-261523.pdf"},"s_mayor_report":{"title":"Mayor's Budget Report 2026: Operating and Capital Budget","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2026/mpb/bgrd/backgroundfile-264740.pdf"},"s_council":{"title":"Council decision, item 2026.MPB38.1","publisher":"City of Toronto","type":"official","url":"https://secure.toronto.ca/council/agenda-item.do?item=2026.MPB38.1"},"s_budget_summary":{"title":"2026 City of Toronto Budget Summary","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/wp-content/uploads/2026/05/8f04-2026-City-of-Toronto-Budget-Summary.pdf"},"s_staff_appendix":{"title":"2026 Staff Prepared Operating Budget, Appendix 1.1","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2026/bu/bgrd/backgroundfile-261456.pdf"},"s_tps_notes":{"title":"2026 Budget Notes: Toronto Police Service","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2026/bu/bgrd/backgroundfile-261506.pdf"},"s_ttc_notes":{"title":"2026 Budget Notes: Toronto Transit Commission","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2026/bu/bgrd/backgroundfile-261746.pdf"},"s_ttc_2025":{"title":"Recommended 2025 TTC Operating Budget","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2025/bu/bgrd/backgroundfile-252576.pdf"},"s_paramedic":{"title":"2026 Budget Notes: Toronto Paramedic Services","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2026/bu/bgrd/backgroundfile-261037.pdf"},"s_fire":{"title":"2026 Budget Notes: Toronto Fire Services","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2026/bu/bgrd/backgroundfile-261164.pdf"},"s_tsss":{"title":"2026 Budget Notes: Toronto Shelter and Support Services","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2026/bu/bgrd/backgroundfile-261532.pdf"},"s_housing":{"title":"2026 Budget Notes: Housing Secretariat and Housing Development Office","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2026/bu/bgrd/backgroundfile-261369.pdf"},"s_tchc":{"title":"2026 Budget Notes: Toronto Community Housing Corporation","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2026/bu/bgrd/backgroundfile-261373.pdf"},"s_children":{"title":"2026 Budget Notes: Children's Services","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2026/bu/bgrd/backgroundfile-261785.pdf"},"s_tph":{"title":"2026 Program Summary: Toronto Public Health","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/wp-content/uploads/2026/03/86ce-2026-Public-Book-TPH-V1.pdf"},"s_tess26":{"title":"2026 Budget Notes: Toronto Employment & Social Services","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2026/bu/bgrd/backgroundfile-261683.pdf"},"s_tess25":{"title":"2025 Budget Notes: Toronto Employment and Social Services","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2025/bu/bgrd/backgroundfile-251642.pdf"},"s_tpl":{"title":"2026 Budget Notes: Toronto Public Library","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2026/bu/bgrd/backgroundfile-261729.pdf"},"s_parks":{"title":"2026 Budget Notes: Parks and Recreation","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2026/bu/bgrd/backgroundfile-261733.pdf"},"s_transport":{"title":"2026 Budget Notes: Transportation Services","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2026/bu/bgrd/backgroundfile-261731.pdf"},"s_tpra_note":{"title":"2026 Operating Budget Briefing Note: Toronto Poverty Reduction Strategy","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2026/bu/bgrd/backgroundfile-261474.pdf"},"s_variance":{"title":"Operating Variance Report for the Four Months Ended April 30, 2026","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2026/ex/bgrd/backgroundfile-289543.pdf"},"s_ttc_variance":{"title":"TTC Board item 2026.TTC15.8 (financial update)","publisher":"City of Toronto","type":"official","url":"https://secure.toronto.ca/council/agenda-item.do?item=2026.TTC15.8"},"s_rates":{"title":"City approves 2026 interim rates for Toronto Water and Solid Waste","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/news/city-of-toronto-approves-2026-interim-rates-and-fees-for-toronto-water-and-solid-waste-management-services/"},"s_consult":{"title":"2026 Budget Consultations presentation (Oct 2025)","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/wp-content/uploads/2025/10/8fd0-2026-Budget-Public-Consultation-Presentation.pdf"},"s_budget_process":{"title":"City of Toronto 2026 budget process","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/news/city-of-toronto-2026-budget-process"},"s_mayor_release":{"title":"Mayor Chow's 2026 budget delivers more affordability","publisher":"Office of Mayor Olivia Chow","type":"political","url":"https://www.mayoroliviachow.ca/mayor_chow_2026_budget"},"s_cbc_council":{"title":"Toronto city council approves 2026 budget that Chow says prioritizes affordability","publisher":"CBC News","type":"news","url":"https://www.cbc.ca/news/canada/toronto/council-debate-budget-2026-9.7081563"},"s_cbc_mayor":{"title":"Toronto mayor's 2026 budget keeps 2.2% property tax increase","publisher":"CBC News","type":"news","url":"https://www.cbc.ca/news/canada/toronto/toronto-mayors-budget-2026-9.7068896"},"s_cbc_police":{"title":"Toronto police request $93M budget increase in 2026","publisher":"CBC News","type":"news","url":"https://www.cbc.ca/news/canada/toronto/toronto-police-budget-9.7047573"},"s_cp24_pocket":{"title":"'A very affordable budget': how Toronto's budget will impact your pocketbook","publisher":"CP24","type":"news","url":"https://www.cp24.com/local/toronto/2026/01/08/a-very-affordable-budget-a-look-at-all-the-ways-torontos-budget-will-impact-your-pocketbook/"},"s_globalnews_launch":{"title":"Toronto tables budget with 2.2% tax increase to kick off election year","publisher":"Global News","type":"news","url":"https://globalnews.ca/news/11603755/toronto-2026-budget-begins/"},"s_greenline":{"title":"Where does the City of Toronto get its money?","publisher":"The Green Line","type":"news","url":"https://thegreenline.to/stories/city-of-toronto-money-budget/"},"s_capital":{"title":"Toronto council adopts $63.1 billion capital plan as part of 2026 budget","publisher":"Ontario Construction News","type":"news","url":"https://ontarioconstructionnews.com/toronto-council-adopts-63-1-billion-capital-plan-as-part-of-2026-budget"},"s_spt":{"title":"Final 2026 City Budget Makes Targeted Investments in Key Services","publisher":"Social Planning Toronto","type":"advocacy","url":"https://www.socialplanningtoronto.org/final_2026_city_budget_makes_targeted_investments_in_key_services"},"s_elliott":{"title":"Matt Elliott (City Hall Watcher) on the 2027 shortfall","publisher":"Matt Elliott (Bluesky)","type":"commentary","url":"https://bsky.app/profile/graphicmatt.com"},"s_election":{"title":"2026 Toronto mayoral election","publisher":"Wikipedia","type":"reference","url":"https://en.wikipedia.org/wiki/2026_Toronto_mayoral_election"},"s_census":{"title":"2021 Census Backgrounder: Housing","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/wp-content/uploads/2022/09/8e3a-CityPlanning-2021-Census-Backgrounder-Housing-Indigenous-Peoples.pdf"},"s_variance25":{"title":"Operating Variance Report for the Six Months Ended June 30, 2025","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/legdocs/mmis/2025/ex/bgrd/backgroundfile-258553.pdf"},"s_tps_annual":{"title":"2025 Toronto Police Service Chief's Annual Report","publisher":"Toronto Police Service","type":"official","url":"https://www.tps.ca/media/filer_public/f1/f1/f1f1cd5f-ce16-4577-b3ec-bf1cd25fd935/5bd9cc5a-f0bb-43bc-94bb-00cb21fb3a37.pdf"},"s_para25":{"title":"2025 Program Summary: Toronto Paramedic Services","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/wp-content/uploads/2025/04/8d5d-2025-Public-Book-PS-V1.pdf"},"s_ttc_ceo_apr26":{"title":"TTC CEO's Report, April 2026","publisher":"TTC","type":"official","url":"https://cdn.ttc.ca/-/media/Project/TTC/DevProto/Documents/Home/Transparency-and-accountability/April-CEO-Report-2026---Bus---FINAL.pdf"},"s_global_ttc":{"title":"Toronto transit ridership sputters, failing to hit projections","publisher":"Global News","type":"news","url":"https://globalnews.ca/news/11589127/ttc-ridership-fall-2025/"},"s_shelter_referrals":{"title":"Shelter System Requests for Referrals","publisher":"City of Toronto","type":"official","url":"https://www.toronto.ca/city-government/data-research-maps/research-reports/housing-and-homelessness-research-and-reports/shelter-system-requests-for-referrals/"},"s_tpl_sundays":{"title":"City Council approves 2026 budget to expand library hours and services","publisher":"Toronto Public Library","type":"official","url":"https://tpl.ca/news/city-council-approves-2026-budget-to-expand-library-hours-and-services/"},"s_ttc_farecap":{"title":"Monthly fare capping now in effect at the TTC","publisher":"TTC","type":"official","url":"https://www.ttc.ca/news/2026/September/Monthly-fare-capping-now-in-effect-at-the-TTC"},"s_tpl_june26":{"title":"City Librarian's Report for June 2026","publisher":"Toronto Public Library","type":"official","url":"https://tpl.ca/news/city-librarians-report-for-june-2026/"}},"checks":{"reportedChanges":{"police":[93.8,7],"paramedics":[34.929,24.9],"fire":[null,1.8],"shelter":[15.266,6.9],"housing":[15.759,2.7],"tchc":[2.519,null],"children":[1.817,1.8],"health":[null,10.1],"library":[19.834,7.8],"parks":[19.9,5.6],"transportation":[-25.046,-7.6],"ttc":[94,null]},"avgHomeIncrease":91.53,"garbageIncreases":{"Small":11.49,"Extra large":21.97}},"commitments":[{"id":"fare-freeze","program":"ttc","promise":"Freeze TTC fares for 2026 (third year in a row)","status":"delivered","evidence":"No fare increase in 2026.","sources":["s_final_release"]},{"id":"fare-cap","program":"ttc","promise":"Monthly fare cap: free rides after 47 paid trips, starting September 2026","status":"delivered","evidence":"Fare capping took effect September 1, 2026, on PRESTO and debit/credit tap.","sources":["s_ttc_farecap"]},{"id":"libraries-7","program":"library","promise":"All 100 library branches open 7 days a week by July 2026","status":"unverified","evidence":"Planned for July 2026 (June 2026 library report still listed it as upcoming). We found no public confirmation it was completed.","sources":["s_tpl_sundays","s_tpl_june26"]},{"id":"nutrition","program":"health","promise":"Expand student nutrition to about 330,000 students a day in 841 schools","status":"unverified","evidence":"Funded in the final budget. No delivery report found yet.","sources":["s_final_release"]},{"id":"police-hiring","program":"police","promise":"Hire 360 police officers in 2026 (about 143 net new)","status":"unverified","evidence":"Funded ($20.5M). No year-end hiring report yet.","sources":["s_cbc_police","s_spt"]},{"id":"paramedic-hiring","program":"paramedics","promise":"Add 94 permanent paramedic positions to improve response times","status":"unverified","evidence":"Funded ($15.2M gross, $7.0M net). No 2026 response-time results published yet.","sources":["s_paramedic"]},{"id":"on-budget","program":null,"promise":"Deliver services within the approved budget","status":"at_risk","evidence":"As of April 30, the City projected a $97.4M overspend on tax-supported services (TTC: $64.3M).","sources":["s_variance"]},{"id":"fare-cap-40","program":"ttc","promise":"Lower the fare cap to 40 rides a month in 2027","status":"upcoming","evidence":"Planned for 2027; depends on the 2027 budget.","sources":["s_mayor_release"]}],"outlook":{"year":2027,"gapLowB":1.1,"gapHighB":1.5,"points":["The City's own outlook projected about a $1.1B shortfall going into 2027.","Including expected reductions in provincial and federal funding, City Hall columnist Matt Elliott estimates about $1.5B.","$323M of 2026 'bridging' money from reserves was one-time and must be replaced.","The TTC fare cap is planned to drop from 47 to 40 rides a month in 2027, which costs fare revenue.","Mayor Olivia Chow was re-elected on October 26, 2026, so the 2027 budget will again be a 'strong mayor' budget she proposes."],"sources":["s_cbc_council","s_elliott","s_launch","s_election"]},"taxHistoryNote":"2026 was an election year; its increase was the smallest of the current mayor's term."}}};</script>
 <script>
 (() => {
 // ---- src/format.js
@@ -558,27 +654,27 @@ function summarizeDeltas(rows) {
 /** Effective municipal tax rate implied by the City's own average-home example. */
 function municipalRate(data) {
   const h = data.headline;
-  return h.avgHomeMunicipalTax2026 / h.avgHomeAssessment;
+  return h.avgHomeMunicipalTax / h.avgHomeAssessment;
 }
 
 /**
  * Estimate a homeowner's municipal property tax (excludes the provincial education portion).
- * Toronto assessments are frozen at 2016 values, so the same assessment applies both years.
+ * Assumes the same assessed value both years (true where assessments are frozen, e.g. Ontario).
  */
 function estimateTax(data, assessed) {
   const rate = municipalRate(data);
   const pct = data.headline.propertyTaxIncreasePct / 100;
-  const tax2026 = assessed * rate;
-  const tax2025 = tax2026 / (1 + pct);
-  const increase = tax2026 - tax2025;
-  return { tax2025, tax2026, increase, monthly: increase / 12 };
+  const taxAfter = assessed * rate;
+  const taxBefore = taxAfter / (1 + pct);
+  const increase = taxAfter - taxBefore;
+  return { taxBefore, taxAfter, increase, monthly: increase / 12 };
 }
 
 function garbageFees(data, size) {
-  const u = data.utilityRates2026;
+  const u = data.utilityRates;
   const bin = u.garbageBins.find((b) => b.size === size) ?? u.garbageBins[1];
-  const fee2025 = bin.fee2026 / (1 + u.solidWasteIncreasePct / 100);
-  return { size: bin.size, fee2026: bin.fee2026, fee2025, increase: bin.fee2026 - fee2025 };
+  const feeBefore = bin.fee / (1 + u.solidWasteIncreasePct / 100);
+  return { size: bin.size, fee: bin.fee, feeBefore, increase: bin.fee - feeBefore };
 }
 
 /**
@@ -612,6 +708,50 @@ function referencedSourceIds(data) {
   };
   walk(data);
   return ids;
+}
+
+/* ---------- evaluation helpers ---------- */
+
+/** Convert a $M amount to dollars per household. */
+function perHousehold(data, amountM) {
+  return (amountM * 1e6) / data.meta.households;
+}
+
+const COMMITMENT_STATUSES = ["delivered", "at_risk", "unverified", "not_delivered", "upcoming"];
+
+function commitmentSummary(data) {
+  const counts = Object.fromEntries(COMMITMENT_STATUSES.map((s) => [s, 0]));
+  for (const c of data.commitments ?? []) counts[c.status] = (counts[c.status] ?? 0) + 1;
+  const total = (data.commitments ?? []).length;
+  const due = total - counts.upcoming; // promises whose deadline has arrived or that are ongoing
+  return { counts, total, due };
+}
+
+function commitmentsFor(data, programId) {
+  return (data.commitments ?? []).filter((c) => c.program === programId);
+}
+
+/**
+ * Direction of an outcome metric. Returns "improved" | "worsened" | "flat" | "none" (no comparison point).
+ */
+function outcomeDirection(o) {
+  if (!o.before || o.before.value == null || !o.after) return "none";
+  const diff = o.after.value - o.before.value;
+  if (Math.abs(diff) < 1e-9) return "flat";
+  const up = diff > 0;
+  return (o.better === "higher") === up ? "improved" : "worsened";
+}
+
+/** Totals used to compare new spending against what the average household paid. */
+function householdComparison(data) {
+  const { baseYear, compareYear } = data.meta;
+  const s = summarizeDeltas(computeDeltas(data, baseYear, compareYear));
+  const avgIncrease = data.headline.avgHomeIncrease ?? estimateTax(data, data.headline.avgHomeAssessment).increase;
+  return {
+    newSpendingPerHousehold: perHousehold(data, s.increaseTotal),
+    netChangePerHousehold: perHousehold(data, s.netChange),
+    avgTaxIncrease: avgIncrease,
+  };
 }
 
 // ---- src/charts.js
@@ -689,7 +829,7 @@ function hbars(container, items, opts = {}) {
   const width = Math.max(300, container.clientWidth || 640);
   const svg = el("svg", { role: "img", "aria-label": opts.ariaLabel || "Bar chart" }, container);
 
-  const narrow = width < 560;
+  const narrow = width < 440;
   const labelW = narrow ? 0 : Math.min(240, Math.max(...items.map((d) => measureText(svg, d.label, "cat-label"))) + 16);
   const valueW = Math.max(...items.map((d) => measureText(svg, d.valueLabel, "value-label"))) + 10;
   const labelRow = narrow ? 18 : 0;
@@ -857,154 +997,159 @@ function tipHtml(title, lines = []) {
 const $ = (id) => document.getElementById(id);
 const state = { measure: "abs", view: "chart", selected: null, tlKind: "all" };
 let DATA;
+let INDEX;
 
+/* ---------- data loading ---------- */
 async function loadData() {
-  // A build step can inline the dataset as window.__BUDGET_DATA__ so the page works from file://.
-  if (window.__BUDGET_DATA__) return window.__BUDGET_DATA__;
-  const res = await fetch("data/toronto-budget.json");
-  if (!res.ok) throw new Error(`Could not load data (${res.status})`);
+  const params = new URLSearchParams(location.search);
+  // A build step can inline everything as window.__BUDGET_DATA__ = { index, cities } so the page works from file://.
+  const bundled = window.__BUDGET_DATA__;
+  INDEX = bundled ? bundled.index : await (await fetch("data/cities/index.json")).json();
+  const entry = INDEX.find((c) => c.id === params.get("city")) || INDEX[0];
+  if (bundled) return bundled.cities[entry.id];
+  const res = await fetch(`data/cities/${entry.file}`);
+  if (!res.ok) throw new Error(`Could not load data for ${entry.name} (${res.status})`);
   return res.json();
 }
 
-/* ---------- helpers ---------- */
+/* ---------- small helpers ---------- */
+const Y = () => DATA.meta.compareYear;
+const Y0 = () => DATA.meta.baseYear;
+
+function sourceLabel(s) {
+  if (s.type !== "official" || s.publisher.length < 8) return s.publisher;
+  const t = s.title.replace(/^(\d{4}) Budget Notes: /, "$1 Budget Notes, ");
+  return t.length > 48 ? `${t.slice(0, 46).trimEnd()}…` : t;
+}
 function srcLinks(ids = []) {
-  const links = ids
+  const links = [...new Set(ids)]
     .map((id) => DATA.sources[id])
     .filter(Boolean)
     .map((s) => `<a href="${escapeHtml(s.url)}" target="_blank" rel="noopener" title="${escapeHtml(s.title)}">${escapeHtml(sourceLabel(s))}</a>`);
   return links.length ? `<p class="src-links">Source: ${links.join(" · ")}</p>` : "";
-}
-function sourceLabel(s) {
-  if (s.publisher !== "City of Toronto") return s.publisher;
-  const t = s.title.replace(/^\d{4} Budget Notes: /, (m) => `${m.slice(0, 4)} Budget Notes, `);
-  return t.length > 48 ? `${t.slice(0, 46).trimEnd()}…` : t;
 }
 function basisBadge(basis) {
   const map = { official: ["badge-official", "Official"], derived: ["badge-derived", "Derived"], approx: ["badge-approx", "Approx."] };
   const [cls, label] = map[basis] || map.approx;
   return `<span class="badge ${cls}">${label}</span>`;
 }
-function tile(label, value, sub) {
-  return `<div class="tile"><div class="tile-label">${label}</div><div class="tile-value">${value}</div>${sub ? `<div class="tile-sub">${sub}</div>` : ""}</div>`;
+function tile(label, value, sub, href) {
+  const inner = `<div class="tile-label">${label}</div><div class="tile-value">${value}</div>${sub ? `<div class="tile-sub">${sub}</div>` : ""}`;
+  return href ? `<a class="tile tile-link" href="${href}">${inner}</a>` : `<div class="tile">${inner}</div>`;
 }
 function setRadio(groupEl, attr, value) {
   groupEl.querySelectorAll("button").forEach((b) => b.setAttribute("aria-checked", String(b.dataset[attr] === value)));
 }
 
-/* ---------- hero ---------- */
-function renderHero() {
-  const h = DATA.headline;
-  const prev = DATA.taxHistory.find((t) => t.year === DATA.meta.baseYear);
-  $("statusLine").textContent = `${DATA.meta.compareYear} budget · final · updated ${DATA.meta.lastUpdated}`;
-  $("heroTiles").innerHTML = [
-    tile("Operating budget", billions(h.operatingTotalB), `${billions(h.taxSupportedGrossB, 2)} tax-supported + ${billions(h.rateSupportedGrossB, 2)} water &amp; garbage`),
-    tile("Property tax increase", `${h.propertyTaxIncreasePct}%`, `<span class="tile-delta">${dollars(h.avgHomeIncrease2026, { cents: true })}/yr</span> on the average home. Last year: ${prev ? prev.totalPct + "%" : "n/a"}`),
-    tile("Gap that had to be closed", millions(h.openingGapM), "Closing it with tax alone would have meant a ~27% increase"),
-    tile("10-year capital plan", billions(h.capital10yrB), `${billions(h.capital2026B)} of it in ${DATA.meta.compareYear}. Largest in City history`),
-  ].join("");
+const STATUS = {
+  delivered: { label: "Delivered", icon: "✓", cls: "st-good" },
+  at_risk: { label: "At risk", icon: "!", cls: "st-serious" },
+  not_delivered: { label: "Not delivered", icon: "✕", cls: "st-critical" },
+  unverified: { label: "Not yet verified", icon: "?", cls: "st-neutral" },
+  upcoming: { label: "Coming up", icon: "→", cls: "st-neutral" },
+};
+const statusPill = (s) => `<span class="status ${STATUS[s].cls}"><span aria-hidden="true">${STATUS[s].icon}</span> ${STATUS[s].label}</span>`;
+
+function fmtOutcome(o, v) {
+  if (!v) return "–";
+  const n = Number.isInteger(v.value) ? int(v.value) : v.value.toFixed(1);
+  if (o.unit === "%") return `${v.prefix ?? ""}${n}%`;
+  if (o.unit === "min") return `${n} min`;
+  return `${v.prefix ?? ""}${n}`;
 }
-
-/* ---------- deltas ---------- */
-function renderDeltas() {
-  const { baseYear, compareYear } = DATA.meta;
-  const rows = computeDeltas(DATA, baseYear, compareYear, state.measure);
-  const sum = summarizeDeltas(rows);
-  if (!state.selected) state.selected = sum.biggest.id;
-
-  $("changesSub").textContent = `Change in each service's City-funded (net) budget, ${baseYear} → ${compareYear}. Tap a bar for details.`;
-  const isPct = state.measure === "pct";
-  const items = rows.map((r) => ({
-    id: r.id,
-    label: r.short,
-    value: isPct ? r.pct : r.delta,
-    valueLabel: isPct ? pct(r.pct) : millions(r.delta, { signed: true }),
-    cls: r.delta >= 0 ? "bar-up" : "bar-down",
-    ariaLabel: `${r.name}: ${millions(r.delta, { signed: true })}, ${pct(r.pct)}. Select for details.`,
-    tipHtml: tipHtml(r.name, [
-      `${baseYear}: ${millions(r.base)} → ${compareYear}: ${millions(r.compare)}`,
-      `Change: ${millions(r.delta, { signed: true })} (${pct(r.pct)})`,
-    ]),
-  }));
-
-  $("deltaChart").hidden = state.view !== "chart";
-  $("deltaTable").hidden = state.view !== "table";
-  if (state.view === "chart") {
-    hbars($("deltaChart"), items, {
-      selectedId: state.selected,
-      onSelect: (id) => { state.selected = id; renderDeltas(); },
-      tickFormat: (v) => (isPct ? `${v > 0 ? "+" : ""}${Math.round(v)}%` : v === 0 ? "0" : millions(v, { signed: true })),
-      ariaLabel: `Change in net budget by program, ${baseYear} to ${compareYear}`,
-    });
-  } else {
-    $("deltaTable").innerHTML = `<table>
-      <thead><tr><th>Service</th><th class="num">${baseYear}</th><th class="num">${compareYear}</th><th class="num">Change</th><th class="num">%</th><th>Data</th></tr></thead>
-      <tbody>${rows.map((r) => `<tr><td>${escapeHtml(r.name)}</td><td class="num">${millions(r.base)}</td><td class="num">${millions(r.compare)}</td><td class="num">${millions(r.delta, { signed: true })}</td><td class="num">${pct(r.pct)}</td><td>${basisBadge(r.basis)}</td></tr>`).join("")}
-      <tr><td><strong>Total of these ${rows.length}</strong></td><td class="num"><strong>${millions(sum.baseTotal)}</strong></td><td class="num"><strong>${millions(sum.compareTotal)}</strong></td><td class="num"><strong>${millions(sum.netChange, { signed: true })}</strong></td><td class="num"><strong>${pct((sum.netChange / sum.baseTotal) * 100)}</strong></td><td></td></tr>
-      </tbody></table>`;
-  }
-
-  const top2 = [...rows].sort((a, b) => b.delta - a.delta).slice(0, 2);
-  const topShare = ((top2[0].delta + top2[1].delta) / sum.increaseTotal) * 100;
-  $("deltaFoot").innerHTML =
-    `Across these ${rows.length} services, net budgets rose by ${millions(sum.increaseTotal)} and fell by ${millions(-sum.decreaseTotal)}. ` +
-    `<strong>${escapeHtml(top2[0].short)} and ${escapeHtml(top2[1].short)} alone account for ${Math.round(topShare)}% of the new money.</strong>`;
-
-  renderDetail(rows.find((r) => r.id === state.selected) || rows[0]);
-}
-
-function renderDetail(r) {
-  const { baseYear, compareYear } = DATA.meta;
-  const hl = r.highlights.length ? `<ul>${r.highlights.map((h) => `<li>${escapeHtml(h)}</li>`).join("")}</ul>` : `<p class="muted">No specific new items were itemized for this service in the sources we used.</p>`;
-  $("programDetail").innerHTML = `<div class="detail">
-    <div class="detail-head"><h3>${escapeHtml(r.name)}</h3>${basisBadge(r.basis)}</div>
-    <p class="muted small">${escapeHtml(r.what)}</p>
-    <div class="detail-nums">
-      <div><div class="l">${baseYear} net</div><div class="n">${millions(r.base)}</div></div>
-      <div><div class="l">${compareYear} net</div><div class="n">${millions(r.compare)}</div></div>
-      <div><div class="l">Change</div><div class="n">${millions(r.delta, { signed: true })}</div><div class="l">${pct(r.pct)}</div></div>
+const DIR = {
+  improved: { label: "Better", cls: "dir-good", icon: "▲" },
+  worsened: { label: "Worse", cls: "dir-bad", icon: "▼" },
+  flat: { label: "No change", cls: "dir-flat", icon: "■" },
+  none: { label: "No earlier figure to compare", cls: "dir-flat", icon: "" },
+};
+function outcomeCard(o, programName) {
+  const d = outcomeDirection(o);
+  return `<div class="outcome">
+    ${programName ? `<div class="outcome-prog">${escapeHtml(programName)}</div>` : ""}
+    <div class="outcome-metric">${escapeHtml(o.metric)}</div>
+    <div class="outcome-vals">
+      ${o.before ? `<span class="ov"><span class="ov-n">${fmtOutcome(o, o.before)}</span><span class="ov-p">${escapeHtml(o.before.period)}</span></span><span class="ov-arrow" aria-hidden="true">→</span>` : ""}
+      <span class="ov"><span class="ov-n">${fmtOutcome(o, o.after)}</span><span class="ov-p">${escapeHtml(o.after.period)}</span></span>
+      <span class="dir ${DIR[d].cls}">${DIR[d].icon ? `<span aria-hidden="true">${DIR[d].icon}</span> ` : ""}${DIR[d].label}</span>
     </div>
-    ${r.gross2026 ? `<p class="small">Total ${compareYear} spending including money from other sources (gross): <strong>${millions(r.gross2026)}</strong>.</p>` : ""}
-    <h4 class="small" style="margin:.4rem 0">What changed</h4>
-    ${hl}
-    <p class="small muted">${escapeHtml(r.basisNote)}</p>
-    ${srcLinks(r.sources)}
+    <p class="small muted">${escapeHtml(o.note)}</p>
+    ${srcLinks(o.sources)}
   </div>`;
 }
 
-/* ---------- gap ---------- */
-function renderGap() {
-  const g = DATA.gapClosing;
-  $("gapSub").textContent = g.note;
-  const items = [
-    { id: "gap", label: "The opening gap", value: g.openingGapM, cls: "bar-neutral", valueLabel: millions(g.openingGapM), tipHtml: tipHtml("Opening gap", ["Cost of keeping services running minus expected revenue."]) },
-    ...g.measures.map((m, i) => ({
-      id: `m${i}`,
-      label: m.label,
-      value: m.amountM,
-      cls: m.kind === "reserve" ? "bar-reserve" : "bar-cut",
-      valueLabel: millions(m.amountM),
-      tipHtml: tipHtml(m.label, [m.detail]),
-    })),
-  ];
-  const c = $("gapChart");
-  c.innerHTML = "";
-  const legend = document.createElement("div");
-  legend.className = "legend-inline";
-  legend.innerHTML = `<span style="--sw:var(--cut)">Savings &amp; cuts</span><span style="--sw:var(--reserve)">Drawn from reserves (savings accounts)</span><span style="--sw:var(--neutral)">Size of the gap</span>`;
-  const host = document.createElement("div");
-  c.append(legend, host);
-  hbars(host, items, { tickFormat: (v) => (v === 0 ? "0" : millions(v)), ariaLabel: "Measures used to close the budget gap" });
-  $("gapFoot").innerHTML = `Amounts overlap and come from different sources, so they don't add up to the gap. ${srcLinks([...new Set(g.measures.flatMap((m) => m.sources))])}`;
-  const rev = DATA.revenue2026.parts.find((p) => p.label.startsWith("Reserves"));
-  $("gapReserveShare").innerHTML = `In ${DATA.meta.compareYear}, about <strong>${billions(rev.amountB)}</strong> (roughly ${Math.round((rev.amountB / DATA.revenue2026.totalB) * 100)}% of the operating budget) comes from reserves, about $400M more than the year before. That's the main reason the 2027 budget already starts with a large gap.`;
+/* ---------- verdicts (stored per viewer, in this browser only) ---------- */
+const VERDICTS = [
+  { id: "worth", label: "Worth it", icon: "👍" },
+  { id: "unsure", label: "Not sure", icon: "🤷" },
+  { id: "not", label: "Not worth it", icon: "👎" },
+];
+const vKey = () => `budget-verdicts:${DATA.meta.id}:${Y()}`;
+function getVerdicts() {
+  try { return JSON.parse(localStorage.getItem(vKey())) || {}; } catch { return {}; }
+}
+function setVerdict(programId, v) {
+  const all = getVerdicts();
+  if (all[programId] === v) delete all[programId];
+  else all[programId] = v;
+  try { localStorage.setItem(vKey(), JSON.stringify(all)); } catch {}
+  memVerdicts = all;
+  renderDeltas();
+  renderScorecard();
+}
+let memVerdicts = null; // fallback when storage is blocked
+const verdicts = () => { const v = getVerdicts(); return Object.keys(v).length ? v : memVerdicts || {}; };
+
+function verdictButtons(programId, compact = false) {
+  const cur = verdicts()[programId];
+  return `<div class="verdict ${compact ? "verdict-compact" : ""}" role="group" aria-label="Your verdict">
+    ${VERDICTS.map((v) => `<button type="button" data-verdict="${v.id}" data-program="${programId}" aria-pressed="${cur === v.id}" aria-label="${v.label}" title="${v.label}"><span aria-hidden="true">${v.icon}</span> ${compact ? `<span class="v-label">${v.label}</span>` : v.label}</button>`).join("")}
+  </div>`;
+}
+document.addEventListener("click", (e) => {
+  const b = e.target.closest("[data-verdict]");
+  if (b) setVerdict(b.dataset.program, b.dataset.verdict);
+});
+
+/* ---------- hero ---------- */
+function renderHero() {
+  const m = DATA.meta;
+  const h = DATA.headline;
+  document.title = `${m.cityName} Budget Scorecard`;
+  $("brandName").textContent = `${m.cityName} Budget Scorecard`;
+  $("statusLine").textContent = `${Y()} budget · updated ${m.lastUpdated}`;
+  $("hero-title").textContent = `${m.cityName}'s ${Y()} budget: what you paid, where it went, and what it delivered.`;
+  $("heroLede").innerHTML = `The ${escapeHtml(m.jurisdiction)} spends about <strong>${billions(h.operatingTotalB)}</strong> a year. Most of it is the same as last year, so this page skips to what <em>changed</em> and gives you what you need to judge it for yourself. ${escapeHtml(m.leader.title)}: ${escapeHtml(m.leader.name)}${m.leader.note ? ` (${escapeHtml(m.leader.note)})` : ""}.`;
+
+  const prev = DATA.taxHistory.find((t) => t.year === Y0());
+  const sum = summarizeDeltas(computeDeltas(DATA, Y0(), Y()));
+  const cs = commitmentSummary(DATA);
+  const iy = DATA.inYear?.lines?.[0];
+  $("heroTiles").innerHTML = [
+    tile("Your property tax", `+${dollars(h.avgHomeIncrease, { cents: true })}`, `a year on the average home (+${h.propertyTaxIncreasePct}%${prev ? `; last year +${prev.totalPct}%` : ""})`, "#pay"),
+    tile("New money for services", millions(sum.increaseTotal, { signed: true }), `≈ ${dollars(perHousehold(DATA, sum.increaseTotal))} per household across ${sum.countUp} services; ${sum.countDown} cut`, "#where"),
+    tile("Promises delivered", `${cs.counts.delivered} of ${cs.due}`, [cs.counts.at_risk && `${cs.counts.at_risk} at risk`, cs.counts.not_delivered && `${cs.counts.not_delivered} not delivered`, cs.counts.unverified && `${cs.counts.unverified} not yet verified`].filter(Boolean).join(" · "), "#deliver"),
+    iy ? tile("On budget?", iy.valueM < 0 ? `${millions(-iy.valueM)} over` : `${millions(iy.valueM)} under`, `projected for the year, as of ${escapeHtml(DATA.inYear.asOf)}`, "#sustain") : "",
+  ].join("");
 }
 
-/* ---------- calculator ---------- */
-function renderCalc() {
+/* ---------- 1. what you pay ---------- */
+function renderPay() {
+  const m = DATA.meta;
+  $("paySub").textContent = `Enter your home's assessed value to see your change. Renters pay property tax indirectly through rent.`;
+  $("assessLabel").textContent = m.propertyTax?.assessmentLabel || "Assessed value";
+  $("assessHelp").textContent = m.propertyTax?.assessmentHelp || "";
+  if (!$("assess").value) $("assess").value = int(DATA.headline.avgHomeAssessment);
+
   const sel = $("bin");
-  if (!sel.options.length) {
-    DATA.utilityRates2026.garbageBins.forEach((b) => sel.add(new Option(`${b.size} (${dollars(b.fee2026, { cents: true })}/yr)`, b.size)));
-    sel.value = "Medium";
+  const bins = DATA.utilityRates?.garbageBins;
+  $("binWrap").hidden = !bins;
+  if (bins && !sel.options.length) {
+    bins.forEach((b) => sel.add(new Option(`${b.size} (${dollars(b.fee, { cents: true })}/yr)`, b.size)));
+    sel.value = bins[Math.min(1, bins.length - 1)].size;
+  }
+  if (!$("assess").dataset.wired) {
+    $("assess").dataset.wired = "1";
     $("assess").addEventListener("input", renderCalc);
     $("assess").addEventListener("blur", () => {
       const v = parseMoney($("assess").value);
@@ -1012,99 +1157,326 @@ function renderCalc() {
     });
     sel.addEventListener("change", renderCalc);
   }
+  renderCalc();
+  renderHouseholdCompare();
+  renderTaxHistory();
+}
+
+function renderCalc() {
   const value = parseMoney($("assess").value);
   if (!Number.isFinite(value) || value <= 0) {
     $("calcOut").innerHTML = `<p class="muted">Enter an assessed value to see your estimate.</p>`;
     return;
   }
   const t = estimateTax(DATA, value);
-  const gfee = garbageFees(DATA, sel.value);
-  const yr = DATA.meta.compareYear;
-  const receipt = taxReceipt(DATA, t.tax2026, yr).slice(0, 6);
-  const rest = t.tax2026 - receipt.reduce((s, r) => s + r.amount, 0);
+  const u = DATA.utilityRates;
+  const gfee = u?.garbageBins ? garbageFees(DATA, $("bin").value) : null;
+  const receipt = taxReceipt(DATA, t.taxAfter, Y()).slice(0, 6);
+  const rest = t.taxAfter - receipt.reduce((s, r) => s + r.amount, 0);
+  const totalChange = t.increase + (gfee ? gfee.increase : 0);
   $("calcOut").innerHTML = `
-    <div class="muted small">Your City property tax went up by about</div>
+    <div class="muted small">Your property tax went up by about</div>
     <div class="calc-big">${dollars(t.increase, { cents: true })} <span class="muted" style="font-size:1rem;font-weight:500">/ year</span></div>
-    <div class="muted small">That's ${dollars(t.monthly, { cents: true })} a month.</div>
+    <div class="muted small">That's ${dollars(t.monthly, { cents: true })} a month${gfee ? `, or ${dollars(totalChange, { cents: true })} a year once the garbage fee is included` : ""}.</div>
     <div class="calc-rows">
-      <div class="calc-row"><span>City property tax ${yr - 1}</span><span>${dollars(t.tax2025)}</span></div>
-      <div class="calc-row"><span>City property tax ${yr}</span><span>${dollars(t.tax2026)}</span></div>
-      <div class="calc-row"><span>Garbage fee change (${escapeHtml(gfee.size.toLowerCase())} bin, +${DATA.utilityRates2026.solidWasteIncreasePct}%)</span><span>${dollars(gfee.increase, { cents: true, signed: true })}</span></div>
-      <div class="calc-row"><span>Water rates</span><span>+${DATA.utilityRates2026.waterIncreasePct}%</span></div>
+      <div class="calc-row"><span>Property tax ${Y0()}</span><span>${dollars(t.taxBefore)}</span></div>
+      <div class="calc-row"><span>Property tax ${Y()}</span><span>${dollars(t.taxAfter)}</span></div>
+      ${gfee ? `<div class="calc-row"><span>Garbage fee (${escapeHtml(gfee.size.toLowerCase())} bin, +${u.solidWasteIncreasePct}%)</span><span>${dollars(gfee.increase, { cents: true, signed: true })}</span></div>` : ""}
+      ${u?.waterIncreasePct ? `<div class="calc-row"><span>Water rates</span><span>+${u.waterIncreasePct}%</span></div>` : ""}
     </div>
     <div class="calc-split">
-      <h4>Roughly where your ${dollars(t.tax2026)} goes</h4>
+      <h4>Roughly where your ${dollars(t.taxAfter)} goes</h4>
       ${receipt.map((r) => `<div class="calc-row"><span>${escapeHtml(r.name)}</span><span>${dollars(r.amount)}</span></div>`).join("")}
-      <div class="calc-row"><span>Everything else shown on this page</span><span>${dollars(rest)}</span></div>
-      <p class="muted small" style="margin-top:8px">A rough illustration: your bill split in proportion to the net budgets of the ${DATA.programs.length} services on this page. The real tax levy also pays debt and corporate costs and is offset by other revenue. Excludes the provincial education tax on your bill.</p>
+      <div class="calc-row"><span>Other services shown on this page</span><span>${dollars(rest)}</span></div>
+      <p class="muted small" style="margin-top:8px">A rough illustration: your bill split in proportion to the net budgets of the ${DATA.programs.length} services on this page. The real levy also pays debt and corporate costs and is offset by other revenue. Excludes ${escapeHtml(DATA.meta.propertyTax?.excludes || "other taxes on your bill")}.</p>
     </div>`;
 }
 
+function renderHouseholdCompare() {
+  const c = householdComparison(DATA);
+  const host = $("householdCompare");
+  host.innerHTML = `<h3>New spending vs. what households paid</h3>
+    <p class="muted small">Per household, ${Y0()} → ${Y()}.</p><div class="chart" id="hhChart"></div>
+    <p class="small" id="hhNote"></p>`;
+  hbars($("hhChart"), [
+    { id: "new", label: "New service spending", value: c.newSpendingPerHousehold, cls: "bar-up", valueLabel: dollars(c.newSpendingPerHousehold), tipHtml: tipHtml("New service spending per household", [`Increases across the ${DATA.programs.length} services shown, divided by ${int(DATA.meta.households)} households.`]) },
+    { id: "tax", label: "Average tax increase", value: c.avgTaxIncrease, cls: "bar-neutral", valueLabel: dollars(c.avgTaxIncrease), tipHtml: tipHtml("Average home's property tax increase", ["Per the City's own example."]) },
+  ], { tickFormat: (v) => dollars(v), ariaLabel: "New spending per household compared with the average tax increase", rowH: 30, barH: 16 });
+  const gap = c.newSpendingPerHousehold - c.avgTaxIncrease;
+  $("hhNote").innerHTML = gap > 0
+    ? `New spending works out to about <strong>${dollars(gap)} more per household</strong> than the average tax increase. The difference came from reserves, other governments and other revenue (see <a href="#sustain">Does it add up?</a>). Not every household is a homeowner, and businesses pay property tax too, so this comparison only shows scale.`
+    : `The average tax increase covers the new spending on these services.`;
+}
+
 function renderTaxHistory() {
-  const cols = DATA.taxHistory.map((t) => ({
+  const hist = DATA.taxHistory;
+  $("taxHistoryTitle").textContent = `Property tax increases, ${hist[0].year}–${hist[hist.length - 1].year}`;
+  const cols = hist.map((t) => ({
     label: String(t.year),
     total: t.totalPct,
     totalLabel: `${t.totalPct}%`,
     parts: [
       { value: t.basePct, cls: "bar-base", name: "General increase" },
-      { value: t.levyPct, cls: "bar-levy", name: "City Building Fund levy" },
+      { value: t.levyPct, cls: "bar-levy", name: "Dedicated levy" },
     ],
     ariaLabel: `${t.year}: ${t.totalPct}% total, ${t.basePct}% general plus ${t.levyPct}% levy, about ${dollars(t.avgHomeIncrease)} on the average home`,
-    tipHtml: tipHtml(`${t.year}: ${t.totalPct}% total`, [`General: ${t.basePct}%`, `City Building levy: ${t.levyPct}%`, `Average home: +${dollars(t.avgHomeIncrease)}`]),
+    tipHtml: tipHtml(`${t.year}: ${t.totalPct}% total`, [`General: ${t.basePct}%`, `Levy: ${t.levyPct}%`, `Average home: +${dollars(t.avgHomeIncrease)}`]),
   }));
   const host = $("taxHistory");
   host.innerHTML = "";
   const legend = document.createElement("div");
   legend.className = "legend-inline";
-  legend.innerHTML = `<span style="--sw:var(--s1)">General increase</span><span style="--sw:var(--s6)">City Building Fund levy</span>`;
+  legend.innerHTML = `<span style="--sw:var(--s1)">General increase</span><span style="--sw:var(--s6)">${escapeHtml(DATA.meta.propertyTax?.levyName || "Dedicated levy")}</span>`;
   const chart = document.createElement("div");
   host.append(legend, chart);
-  stackedColumns(chart, cols, { tickFormat: (v) => `${v}%`, ariaLabel: "Property tax increase by year" });
+  stackedColumns(chart, cols, { tickFormat: (v) => `${v}%`, ariaLabel: "Property tax increase by year", height: 200 });
   const foot = document.createElement("p");
   foot.className = "chart-foot";
-  foot.innerHTML = `${DATA.meta.compareYear} was an election year; the increase was the smallest of Chow's term. ${srcLinks(["s_launch_release"])}`;
+  foot.innerHTML = `${escapeHtml(DATA.taxHistoryNote || "")} ${srcLinks(hist.flatMap((t) => t.sources))}`;
   host.appendChild(foot);
 }
 
-/* ---------- revenue ---------- */
-function renderRevenue() {
-  const r = DATA.revenue2026;
+/* ---------- 2. where it went ---------- */
+function renderDeltas() {
+  const rows = computeDeltas(DATA, Y0(), Y(), state.measure === "pct" ? "pct" : "abs");
+  const sum = summarizeDeltas(rows);
+  if (!state.selected) state.selected = sum.biggest.id;
+  $("whereSub").textContent = `Change in each service's ${DATA.meta.jurisdiction}-funded (net) budget, ${Y0()} → ${Y()}. Select a service to see what the money bought, how it performed, and to give your verdict.`;
+
+  const fmt = {
+    abs: (r) => [r.delta, millions(r.delta, { signed: true })],
+    hh: (r) => { const v = perHousehold(DATA, r.delta); return [v, dollars(v, { signed: true })]; },
+    pct: (r) => [r.pct, pct(r.pct)],
+  }[state.measure];
+  const tick = {
+    abs: (v) => (v === 0 ? "0" : millions(v, { signed: true })),
+    hh: (v) => (v === 0 ? "$0" : dollars(v, { signed: true })),
+    pct: (v) => `${v > 0 ? "+" : ""}${Math.round(v)}%`,
+  }[state.measure];
+  const V = verdicts();
+  const items = rows.map((r) => {
+    const [value, valueLabel] = fmt(r);
+    const vd = VERDICTS.find((v) => v.id === V[r.id]);
+    return {
+      id: r.id,
+      label: vd ? `${r.short} ${vd.icon}` : r.short,
+      value,
+      valueLabel,
+      cls: r.delta >= 0 ? "bar-up" : "bar-down",
+      ariaLabel: `${r.name}: ${millions(r.delta, { signed: true })}, ${pct(r.pct)}${vd ? `, you rated: ${vd.label}` : ""}. Select for details.`,
+      tipHtml: tipHtml(r.name, [
+        `${Y0()}: ${millions(r.base)} → ${Y()}: ${millions(r.compare)}`,
+        `Change: ${millions(r.delta, { signed: true })} (${pct(r.pct)})`,
+        `Per household: ${dollars(perHousehold(DATA, r.delta), { signed: true })}`,
+      ]),
+    };
+  });
+
+  $("deltaChart").hidden = state.view !== "chart";
+  $("deltaTable").hidden = state.view !== "table";
+  if (state.view === "chart") {
+    hbars($("deltaChart"), items, {
+      selectedId: state.selected,
+      onSelect: (id) => { state.selected = id; renderDeltas(); if (window.innerWidth < 880) $("programDetail").scrollIntoView({ behavior: "smooth", block: "start" }); },
+      tickFormat: tick,
+      ariaLabel: `Change in net budget by service, ${Y0()} to ${Y()}`,
+    });
+  } else {
+    $("deltaTable").innerHTML = `<table>
+      <thead><tr><th>Service</th><th class="num">${Y0()}</th><th class="num">${Y()}</th><th class="num">Change</th><th class="num">%</th><th class="num">Per household</th><th>Data</th></tr></thead>
+      <tbody>${rows.map((r) => `<tr><td>${escapeHtml(r.name)}</td><td class="num">${millions(r.base)}</td><td class="num">${millions(r.compare)}</td><td class="num">${millions(r.delta, { signed: true })}</td><td class="num">${pct(r.pct)}</td><td class="num">${dollars(perHousehold(DATA, r.delta), { signed: true })}</td><td>${basisBadge(r.basis)}</td></tr>`).join("")}
+      <tr><td><strong>Total of these ${rows.length}</strong></td><td class="num"><strong>${millions(sum.baseTotal)}</strong></td><td class="num"><strong>${millions(sum.compareTotal)}</strong></td><td class="num"><strong>${millions(sum.netChange, { signed: true })}</strong></td><td class="num"><strong>${pct((sum.netChange / sum.baseTotal) * 100)}</strong></td><td class="num"><strong>${dollars(perHousehold(DATA, sum.netChange), { signed: true })}</strong></td><td></td></tr>
+      </tbody></table>`;
+  }
+
+  const top2 = [...rows].filter((r) => r.delta > 0).sort((a, b) => b.delta - a.delta).slice(0, 2);
+  const topShare = sum.increaseTotal > 0 ? (top2.reduce((t, r) => t + r.delta, 0) / sum.increaseTotal) * 100 : 0;
+  $("deltaFoot").innerHTML =
+    `Net budgets rose by ${millions(sum.increaseTotal)} and fell by ${millions(-sum.decreaseTotal)}. ` +
+    (top2.length === 2 && rows.length > 3 ? `<strong>${escapeHtml(top2[0].short)} and ${escapeHtml(top2[1].short)} alone got ${Math.round(topShare)}% of the new money.</strong>` : "");
+
+  renderDetail(rows.find((r) => r.id === state.selected) || rows[0]);
+}
+
+function renderDetail(r) {
+  const hl = r.highlights.length ? `<ul>${r.highlights.map((h) => `<li>${escapeHtml(h)}</li>`).join("")}</ul>` : `<p class="muted small">No specific new items were itemized for this service in the sources we used.</p>`;
+  const promises = commitmentsFor(DATA, r.id);
+  const outcomes = r.outcomes ?? [];
+  $("programDetail").innerHTML = `<div class="detail">
+    <div class="detail-head"><h3>${escapeHtml(r.name)}</h3>${basisBadge(r.basis)}</div>
+    <p class="muted small">${escapeHtml(r.what)}</p>
+    <div class="detail-nums">
+      <div><div class="l">${Y0()} net</div><div class="n">${millions(r.base)}</div></div>
+      <div><div class="l">${Y()} net</div><div class="n">${millions(r.compare)}</div></div>
+      <div><div class="l">Change</div><div class="n">${millions(r.delta, { signed: true })}</div><div class="l">${pct(r.pct)} · ${dollars(perHousehold(DATA, r.delta), { signed: true })}/household</div></div>
+    </div>
+    ${r.gross ? `<p class="small">Total ${Y()} spending including money from other sources (gross): <strong>${millions(r.gross)}</strong>.</p>` : ""}
+    <h4 class="detail-h">What the money is for</h4>
+    ${hl}
+    <h4 class="detail-h">Promises</h4>
+    ${promises.length ? `<ul class="promises promises-compact">${promises.map((c) => `<li>${statusPill(c.status)}<span>${escapeHtml(c.promise)}</span></li>`).join("")}</ul>` : `<p class="muted small">No specific promise was tied to this service's change.</p>`}
+    <h4 class="detail-h">Results</h4>
+    ${outcomes.length ? outcomes.map((o) => outcomeCard(o)).join("") : `<p class="muted small">No published performance measure found for this service yet.</p>`}
+    <div class="verdict-box">
+      <h4 class="detail-h">Your verdict on this change</h4>
+      ${verdictButtons(r.id)}
+    </div>
+    <p class="small muted">${escapeHtml(r.basisNote)}</p>
+    ${srcLinks(r.sources)}
+  </div>`;
+}
+
+/* ---------- 3. did it deliver ---------- */
+function renderDeliver() {
+  const cs = commitmentSummary(DATA);
+  const order = ["delivered", "at_risk", "not_delivered", "unverified", "upcoming"];
+  $("promiseSummary").innerHTML = order
+    .filter((s) => cs.counts[s])
+    .map((s) => `<div class="ps ${STATUS[s].cls}"><span class="ps-n">${cs.counts[s]}</span><span class="ps-l"><span aria-hidden="true">${STATUS[s].icon}</span> ${STATUS[s].label}</span></div>`)
+    .join("");
+  const progName = Object.fromEntries(DATA.programs.map((p) => [p.id, p.short]));
+  const sorted = [...DATA.commitments].sort((a, b) => order.indexOf(a.status) - order.indexOf(b.status));
+  $("promiseList").innerHTML = sorted.map((c) => `<li>
+      ${statusPill(c.status)}
+      <div>
+        <div class="promise-text">${escapeHtml(c.promise)}${c.program ? ` <span class="muted small">· ${escapeHtml(progName[c.program])}</span>` : ""}</div>
+        <div class="small muted">${escapeHtml(c.evidence)}</div>
+        ${srcLinks(c.sources)}
+      </div></li>`).join("");
+  const withOutcomes = DATA.programs.filter((p) => p.outcomes?.length);
+  $("outcomeList").innerHTML = withOutcomes.flatMap((p) => p.outcomes.map((o) => outcomeCard(o, p.name))).join("") ||
+    `<p class="muted">No service results have been added for this budget yet.</p>`;
+}
+
+/* ---------- 4. does it add up ---------- */
+function renderSustain() {
+  const g = DATA.gapClosing;
+  $("gapSub").textContent = g.note;
+  $("gapTitle").textContent = `How the ${millions(g.openingGapM)} gap was closed`;
+  const items = [
+    { id: "gap", label: "The opening gap", value: g.openingGapM, cls: "bar-neutral", valueLabel: millions(g.openingGapM), tipHtml: tipHtml("Opening gap", ["Cost of keeping services running minus expected revenue."]) },
+    ...g.measures.map((m, i) => ({
+      id: `m${i}`, label: m.label, value: m.amountM, cls: m.kind === "reserve" ? "bar-reserve" : "bar-cut",
+      valueLabel: millions(m.amountM), tipHtml: tipHtml(m.label, [m.detail]),
+    })),
+  ];
+  const c = $("gapChart");
+  c.innerHTML = "";
+  const legend = document.createElement("div");
+  legend.className = "legend-inline";
+  legend.innerHTML = `<span style="--sw:var(--cut)">Savings &amp; cuts (permanent)</span><span style="--sw:var(--reserve)">Drawn from reserves (one-time)</span><span style="--sw:var(--neutral)">Size of the gap</span>`;
+  const host = document.createElement("div");
+  c.append(legend, host);
+  hbars(host, items, { tickFormat: (v) => (v === 0 ? "0" : millions(v)), ariaLabel: "Measures used to close the budget gap" });
+  $("gapFoot").innerHTML = `Amounts overlap and come from different sources, so they don't add up to the gap. Savings tend to last; reserve draws have to be found again next year. ${srcLinks(g.measures.flatMap((m) => m.sources))}`;
+
+  const iy = DATA.inYear;
+  if (iy) {
+    const stat = (l) => `<div class="stat"><div class="l">${escapeHtml(l.label)}</div><div class="n ${l.valueM < 0 ? "over" : "under"}"><span aria-hidden="true">${l.valueM < 0 ? "▲" : "▼"}</span> ${millions(Math.abs(l.valueM), { digits: 1 })}</div><div class="s ${l.valueM < 0 ? "over" : "under"}">${l.valueM < 0 ? "projected over budget" : "projected under budget"}</div></div>`;
+    $("inYear").innerHTML = `<h3>Is ${Y()} on budget?</h3>
+      <p class="muted small">Projected year-end result as of ${escapeHtml(iy.asOf)}.</p>
+      <div class="stat-row">${iy.lines.map(stat).join("")}</div>
+      ${iy.priorYear ? `<p class="small">For comparison: ${escapeHtml(iy.priorYear.label)}, ${millions(Math.abs(iy.priorYear.valueM), { digits: 1 })} ${iy.priorYear.valueM < 0 ? "over" : "under"}.</p>` : ""}
+      <p class="small muted">${escapeHtml(iy.note)}</p>
+      ${srcLinks([...iy.sources, ...(iy.priorYear?.sources ?? [])])}`;
+  }
+  const o = DATA.outlook;
+  if (o) {
+    $("outlook").innerHTML = `<h3>The ${o.year} budget starts in a hole</h3>
+      <p class="muted small">Estimated opening shortfall before any decisions</p>
+      <div class="outlook-range">${billions(o.gapLowB)}–${billions(o.gapHighB)}</div>
+      <ul class="small">${o.points.map((p) => `<li>${escapeHtml(p)}</li>`).join("")}</ul>
+      ${srcLinks(o.sources)}`;
+  }
+
+  const r = DATA.revenue;
+  $("revenueTitle").textContent = `Where the ${billions(r.totalB)} comes from (${r.year})`;
   const colors = ["var(--s1)", "var(--s2)", "var(--s3)", "var(--s4)", "var(--s5)", "var(--neutral)"];
-  const darkInk = [false, false, false, true, false, false];
   const parts = r.parts.map((p, i) => ({
-    label: p.label,
-    value: p.amountB,
-    color: colors[i],
-    darkInk: darkInk[i],
-    neutralInk: i === 5,
+    label: p.label, value: p.amountB, color: colors[i % colors.length], darkInk: i === 3, neutralInk: i === r.parts.length - 1,
     inner: `${Math.round((p.amountB / r.totalB) * 100)}%`,
     ariaLabel: `${p.label}: ${billions(p.amountB, 2)}, ${Math.round((p.amountB / r.totalB) * 100)}%`,
     tipHtml: tipHtml(p.label, [`${billions(p.amountB, 2)} · ${Math.round((p.amountB / r.totalB) * 100)}% of ${billions(r.totalB)}`]),
   }));
   segmentedBar($("revenueBar"), parts, { total: r.totalB, ariaLabel: `Where the ${billions(r.totalB)} operating budget comes from` });
-  $("revenueLegend").innerHTML = r.parts
-    .map((p, i) => `<li><span class="sw" style="background:${colors[i]}"></span><span>${escapeHtml(p.label)}</span><span class="amt">${billions(p.amountB, 2)}</span></li>`)
-    .join("");
-  $("revenueFoot").innerHTML = `${escapeHtml(r.note)} ${srcLinks([...new Set(r.parts.flatMap((p) => p.sources))])}`;
+  $("revenueLegend").innerHTML = r.parts.map((p, i) => `<li><span class="sw" style="background:${colors[i % colors.length]}"></span><span>${escapeHtml(p.label)}</span><span class="amt">${billions(p.amountB, 2)}</span></li>`).join("");
+  $("revenueFoot").innerHTML = `${escapeHtml(r.note)} ${srcLinks(r.parts.flatMap((p) => p.sources))}`;
 
-  const c = DATA.capital;
-  $("capitalTiles").innerHTML = [
-    tile("Capital plan, 2026–2035", billions(c.totalB), `${billions(c.taxSupportedB)} tax-supported · ${billions(c.rateSupportedB)} water &amp; waste`),
-    tile("Spent fixing what exists", `${c.stateOfGoodRepairPct}%`, "of the 10-year plan is repairs (\"state of good repair\")"),
-    tile("Transit expansion not funded", billions(c.unfundedTransitExpansionB), "Planned projects with no money attached yet"),
-  ].join("");
+  const cap = DATA.capital;
+  $("capitalTiles").innerHTML = cap ? [
+    tile("10-year capital plan", billions(cap.totalB), `${billions(cap.taxSupportedB)} tax-supported · ${billions(cap.rateSupportedB)} water &amp; waste`),
+    tile("Spent fixing what exists", `${cap.stateOfGoodRepairPct}%`, "of the 10-year plan is repairs (\"state of good repair\")"),
+    cap.unfundedB ? tile("Planned but not funded", billions(cap.unfundedB), escapeHtml(cap.unfundedLabel || "")) : "",
+  ].join("") : "";
+}
+
+/* ---------- 5. scorecard ---------- */
+function renderScorecard() {
+  const rows = computeDeltas(DATA, Y0(), Y());
+  const V = verdicts();
+  $("verdictList").innerHTML = rows.map((r) => `<li>
+      <div class="vl-name"><strong>${escapeHtml(r.short)}</strong><span class="muted small">${millions(r.delta, { signed: true })} · ${pct(r.pct)}</span></div>
+      ${verdictButtons(r.id, true)}
+    </li>`).join("");
+
+  const rated = rows.filter((r) => V[r.id]);
+  const by = (v) => rows.filter((r) => V[r.id] === v);
+  const money = (xs) => xs.reduce((s, r) => s + Math.max(0, r.delta), 0);
+  const sum = summarizeDeltas(rows);
+  const cs = commitmentSummary(DATA);
+  const iy = DATA.inYear?.lines?.[0];
+  const t = estimateTax(DATA, parseMoney($("assess").value) || DATA.headline.avgHomeAssessment);
+
+  const lines = [
+    `My ${DATA.meta.cityName} ${Y()} budget scorecard`,
+    `Property tax: +${dollars(t.increase, { cents: true })}/yr for my home (+${DATA.headline.propertyTaxIncreasePct}%)`,
+    `Promises delivered: ${cs.counts.delivered} of ${cs.due} (${cs.counts.unverified} not yet verified, ${cs.counts.at_risk} at risk)`,
+    iy ? `On budget: ${iy.valueM < 0 ? `${millions(-iy.valueM)} over` : `${millions(iy.valueM)} under`} (projected, ${DATA.inYear.asOf})` : null,
+    ...VERDICTS.map((v) => { const xs = by(v.id); return xs.length ? `${v.label}: ${xs.map((r) => r.short).join(", ")}` : null; }),
+  ].filter(Boolean);
+
+  $("scoreSummary").innerHTML = `<h3>Your summary</h3>
+    ${rated.length === 0 ? `<p class="muted">Rate a few services to build your scorecard.</p>` : `
+      <div class="score-tally">
+        ${VERDICTS.map((v) => `<div class="stat"><div class="n"><span aria-hidden="true">${v.icon}</span> ${by(v.id).length}</div><div class="l">${v.label}</div></div>`).join("")}
+      </div>
+      <p class="small">You rated <strong>${rated.length} of ${rows.length}</strong> services. Of the ${millions(sum.increaseTotal)} in increases, you judged
+        <strong>${millions(money(by("worth")))}</strong> worth it and <strong>${millions(money(by("not")))}</strong> not worth it.
+        ${sum.countDown ? (() => { const cuts = rows.filter((r) => r.delta < 0); const ok = cuts.filter((r) => V[r.id] === "worth"); const bad = cuts.filter((r) => V[r.id] === "not"); return ok.length || bad.length ? `Of the cuts, you agreed with ${ok.length} and disagreed with ${bad.length}.` : ""; })() : ""}</p>`}
+    <h4 class="detail-h">The facts to weigh</h4>
+    <div class="calc-row"><span>Your tax change</span><span>+${dollars(t.increase, { cents: true })}/yr</span></div>
+    <div class="calc-row"><span>Promises delivered</span><span>${cs.counts.delivered} of ${cs.due}</span></div>
+    ${iy ? `<div class="calc-row"><span>On budget (projected)</span><span>${iy.valueM < 0 ? `${millions(-iy.valueM)} over` : `${millions(iy.valueM)} under`}</span></div>` : ""}
+    ${DATA.outlook ? `<div class="calc-row"><span>Next year's starting gap</span><span>${billions(DATA.outlook.gapLowB)}–${billions(DATA.outlook.gapHighB)}</span></div>` : ""}
+    <div class="score-actions">
+      <button type="button" class="btn" id="copyScore">Copy my scorecard</button>
+      ${rated.length ? `<button type="button" class="btn btn-ghost" id="resetScore">Clear ratings</button>` : ""}
+    </div>
+    <p class="small muted" id="copyMsg" aria-live="polite"></p>`;
+  $("copyScore").onclick = async () => {
+    const text = `${lines.join("\n")}\n${location.href.split("#")[0]}`;
+    try { await navigator.clipboard.writeText(text); $("copyMsg").textContent = "Copied to clipboard."; }
+    catch { $("copyMsg").textContent = text; }
+  };
+  if ($("resetScore")) $("resetScore").onclick = () => {
+    try { localStorage.removeItem(vKey()); } catch {}
+    memVerdicts = {};
+    renderDeltas();
+    renderScorecard();
+  };
 }
 
 /* ---------- timeline ---------- */
 const KIND_LABEL = { process: "Decision", effect: "Takes effect", tracking: "Check-up", upcoming: "Coming up" };
 const KIND_COLOR = { process: "var(--s1)", effect: "var(--s3)", tracking: "var(--s2)", upcoming: "var(--axis)" };
 function renderTimeline() {
+  $("processNote").textContent = DATA.meta.budgetProcess || "";
   const today = DATA.meta.lastUpdated.slice(0, 7);
   let placedToday = false;
   const html = [];
   DATA.timeline.forEach((t) => {
     if (!placedToday && t.date.slice(0, 7) > today) {
-      html.push(`<li class="tl-today" aria-label="Today">Today · ${escapeHtml(DATA.meta.lastUpdated)}</li>`);
+      html.push(`<li class="tl-today">Today · ${escapeHtml(DATA.meta.lastUpdated)}</li>`);
       placedToday = true;
     }
     const hidden = state.tlKind !== "all" && state.tlKind !== t.kind;
@@ -1118,66 +1490,41 @@ function renderTimeline() {
   $("timeline").innerHTML = html.join("");
 }
 
-/* ---------- in-year + outlook ---------- */
-function renderNext() {
-  const iy = DATA.inYear;
-  const stat = (label, m, sub) => `<div class="stat"><div class="l">${label}</div><div class="n ${m < 0 ? "over" : "under"}">${m < 0 ? "▲ " : "▼ "}${millions(Math.abs(m), { digits: 1 })}</div><div class="s ${m < 0 ? "over" : "under"}">${m < 0 ? "projected over budget" : "projected under budget"}</div>${sub ? `<div class="l">${sub}</div>` : ""}</div>`;
-  $("inYear").innerHTML = `<h3>Is ${DATA.meta.compareYear} on track?</h3>
-    <p class="muted small">Projected year-end result as of ${escapeHtml(iy.asOf)}.</p>
-    <div class="stat-row">
-      ${stat("Tax-supported services", iy.taxSupportedProjectedM)}
-      ${stat("of which TTC", iy.ttcProjectedM)}
-      ${stat("Water &amp; garbage", iy.rateSupportedProjectedM)}
-    </div>
-    <p class="small">${escapeHtml(iy.note)}</p>
-    ${srcLinks(iy.sources)}`;
-
-  const o = DATA.outlook2027;
-  $("outlook").innerHTML = `<h3>The 2027 budget starts in a hole</h3>
-    <p class="muted small">Estimated opening shortfall before any decisions</p>
-    <div class="outlook-range">${billions(o.gapLowB)}–${billions(o.gapHighB)}</div>
-    <ul class="small">${o.points.map((p) => `<li>${escapeHtml(p)}</li>`).join("")}</ul>
-    <p class="small muted">When the 2027 budget is released, this page will compare it against 2026 the same way.</p>
-    ${srcLinks(o.sources)}`;
-}
-
 /* ---------- sources ---------- */
 function renderSources() {
-  const TYPE = { official: "City document", news: "News", political: "Mayor's office", advocacy: "Advocacy group", commentary: "Commentary", reference: "Reference" };
+  const TYPE = { official: "Government", news: "News", political: "Politician's office", advocacy: "Advocacy group", commentary: "Commentary", reference: "Reference" };
   const entries = Object.values(DATA.sources).sort((a, b) => (a.type === "official" ? 0 : 1) - (b.type === "official" ? 0 : 1) || a.title.localeCompare(b.title));
-  $("sourceList").innerHTML = entries
-    .map((s) => `<li><a href="${escapeHtml(s.url)}" target="_blank" rel="noopener">${escapeHtml(s.title)}</a> <span class="pub">${escapeHtml(s.publisher)}</span><span class="source-type">${TYPE[s.type] || s.type}</span></li>`)
-    .join("");
+  $("sourceList").innerHTML = entries.map((s) => `<li><a href="${escapeHtml(s.url)}" target="_blank" rel="noopener">${escapeHtml(s.title)}</a> <span class="pub">${escapeHtml(s.publisher)}</span><span class="source-type">${TYPE[s.type] || s.type}</span></li>`).join("");
   $("netDef").textContent = DATA.meta.netDefinition;
-  $("footUpdated").textContent = `Data last updated ${DATA.meta.lastUpdated}. ${DATA.meta.status} Independent explainer, not affiliated with the City of Toronto.`;
+  $("methodNote").textContent = DATA.meta.methodNote || "";
+  $("footUpdated").textContent = `Data last updated ${DATA.meta.lastUpdated}. ${DATA.meta.status} Independent explainer, not affiliated with the ${DATA.meta.jurisdiction}.`;
 }
 
 /* ---------- controls ---------- */
 function wireControls() {
-  document.querySelectorAll("[data-measure]").forEach((b) =>
-    b.addEventListener("click", () => {
-      state.measure = b.dataset.measure;
-      setRadio(b.parentElement, "measure", state.measure);
-      renderDeltas();
-    }));
-  document.querySelectorAll("[data-view]").forEach((b) =>
-    b.addEventListener("click", () => {
-      state.view = b.dataset.view;
-      setRadio(b.parentElement, "view", state.view);
-      renderDeltas();
-    }));
-  document.querySelectorAll("#tlFilter [data-kind]").forEach((b) =>
-    b.addEventListener("click", () => {
-      state.tlKind = b.dataset.kind;
-      setRadio(b.parentElement, "kind", state.tlKind);
-      renderTimeline();
-    }));
+  document.querySelectorAll("[data-measure]").forEach((b) => b.addEventListener("click", () => {
+    state.measure = b.dataset.measure; setRadio(b.parentElement, "measure", state.measure); renderDeltas();
+  }));
+  document.querySelectorAll("[data-view]").forEach((b) => b.addEventListener("click", () => {
+    state.view = b.dataset.view; setRadio(b.parentElement, "view", state.view); renderDeltas();
+  }));
+  document.querySelectorAll("#tlFilter [data-kind]").forEach((b) => b.addEventListener("click", () => {
+    state.tlKind = b.dataset.kind; setRadio(b.parentElement, "kind", state.tlKind); renderTimeline();
+  }));
+
+  if (INDEX.length > 1) {
+    $("cityPickWrap").hidden = false;
+    INDEX.forEach((c) => $("cityPick").add(new Option(c.name, c.id)));
+    $("cityPick").value = DATA.meta.id;
+    $("cityPick").addEventListener("change", (e) => {
+      const u = new URL(location.href);
+      u.searchParams.set("city", e.target.value);
+      location.href = u.toString();
+    });
+  }
 
   const root = document.documentElement;
-  try {
-    const saved = localStorage.getItem("theme");
-    if (saved) root.dataset.theme = saved;
-  } catch {}
+  try { const saved = localStorage.getItem("theme"); if (saved) root.dataset.theme = saved; } catch {}
   $("themeToggle").addEventListener("click", () => {
     const dark = root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
     root.dataset.theme = dark ? "light" : "dark";
@@ -1190,15 +1537,8 @@ function wireControls() {
     if (window.innerWidth === w) return;
     w = window.innerWidth;
     cancelAnimationFrame(raf);
-    raf = requestAnimationFrame(renderCharts);
+    raf = requestAnimationFrame(() => { renderDeltas(); renderHouseholdCompare(); renderTaxHistory(); renderSustain(); });
   });
-}
-
-function renderCharts() {
-  renderDeltas();
-  renderGap();
-  renderTaxHistory();
-  renderRevenue();
 }
 
 async function main() {
@@ -1209,15 +1549,15 @@ async function main() {
     return;
   }
   const years = availableYears(DATA);
-  if (!years.includes(DATA.meta.baseYear) || !years.includes(DATA.meta.compareYear)) {
-    console.warn("Configured years missing from program data", years);
-  }
+  if (!years.includes(Y0()) || !years.includes(Y())) console.warn("Configured years missing from program data", years);
   wireControls();
   renderHero();
-  renderCharts();
-  renderCalc();
+  renderPay();
+  renderDeltas();
+  renderDeliver();
+  renderSustain();
+  renderScorecard();
   renderTimeline();
-  renderNext();
   renderSources();
 }
 

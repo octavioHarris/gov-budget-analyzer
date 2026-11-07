@@ -1,0 +1,171 @@
+{
+  "_readme": "Copy to data/cities/<your-city>.json, fill in every field, add an entry to data/cities/index.json, then run npm test. See docs/DATA_SCHEMA.md.",
+  "meta": {
+    "id": "your-city",
+    "cityName": "Your City",
+    "jurisdiction": "City of Your City",
+    "province": "State/Province",
+    "country": "Country",
+    "locale": "en-US",
+    "currency": "USD",
+    "leader": {
+      "title": "Mayor",
+      "name": "Name of incumbent",
+      "since": "YYYY-MM",
+      "note": ""
+    },
+    "households": 0,
+    "householdsNote": "Source and year of household count",
+    "baseYear": 2025,
+    "compareYear": 2026,
+    "lastUpdated": "YYYY-MM-DD",
+    "status": "e.g. 2026 budget adopted on <date>.",
+    "units": "Program figures are in millions of dollars ($M) unless noted.",
+    "netDefinition": "Net budget = what a program spends minus its own revenue. The net amount is what the city covers from taxes and general revenue.",
+    "methodNote": "Where the figures come from and what is left out.",
+    "propertyTax": {
+      "assessmentLabel": "Assessed value",
+      "assessmentHelp": "Where residents find their assessed value.",
+      "excludes": "school/county taxes",
+      "levyName": "Dedicated levy (if any)"
+    },
+    "budgetProcess": "Who proposes the budget, who can amend it, and how it is adopted.",
+    "sources": [
+      "s_households"
+    ]
+  },
+  "headline": {
+    "operatingTotalB": 0,
+    "taxSupportedGrossB": 0,
+    "rateSupportedGrossB": 0,
+    "capital10yrB": 0,
+    "capitalThisYearB": 0,
+    "openingGapM": 0,
+    "propertyTaxIncreasePct": 0,
+    "propertyTaxBasePct": 0,
+    "cityBuildingLevyPct": 0,
+    "avgHomeAssessment": 1,
+    "avgHomeMunicipalTax": 0,
+    "avgHomeIncrease": 0,
+    "sources": [
+      "s_budget"
+    ]
+  },
+  "taxHistory": [
+    {
+      "year": 2026,
+      "totalPct": 0,
+      "basePct": 0,
+      "levyPct": 0,
+      "avgHomeIncrease": 0,
+      "sources": [
+        "s_budget"
+      ]
+    }
+  ],
+  "programs": [
+    {
+      "id": "police",
+      "name": "Police Department",
+      "short": "Police",
+      "group": "Public safety",
+      "what": "Plain-language description.",
+      "net": {
+        "2025": 0,
+        "2026": 0
+      },
+      "basis": "official",
+      "basisNote": "Which document each year's figure comes from.",
+      "highlights": [
+        "What the change pays for, in plain language."
+      ],
+      "outcomes": [
+        {
+          "metric": "Average emergency response time",
+          "unit": "min",
+          "better": "lower",
+          "before": {
+            "period": "2024",
+            "value": 0
+          },
+          "after": {
+            "period": "2025",
+            "value": 0
+          },
+          "note": "Caveats.",
+          "sources": [
+            "s_budget"
+          ]
+        }
+      ],
+      "sources": [
+        "s_budget"
+      ]
+    }
+  ],
+  "commitments": [
+    {
+      "id": "example",
+      "program": "police",
+      "promise": "What was promised, with a date.",
+      "status": "unverified",
+      "evidence": "What public evidence shows.",
+      "sources": [
+        "s_budget"
+      ]
+    }
+  ],
+  "gapClosing": {
+    "openingGapM": 0,
+    "note": "",
+    "measures": []
+  },
+  "revenue": {
+    "year": 2026,
+    "totalB": 0,
+    "note": "",
+    "parts": [
+      {
+        "label": "Property tax",
+        "amountB": 0,
+        "sources": [
+          "s_budget"
+        ]
+      }
+    ]
+  },
+  "utilityRates": null,
+  "capital": null,
+  "inYear": null,
+  "outlook": null,
+  "timeline": [
+    {
+      "date": "2026-01",
+      "label": "Jan 2026",
+      "kind": "process",
+      "title": "Budget proposed",
+      "detail": "",
+      "sources": [
+        "s_budget"
+      ]
+    }
+  ],
+  "taxHistoryNote": "",
+  "checks": {
+    "reportedChanges": {}
+  },
+  "sources": {
+    "s_budget": {
+      "title": "Adopted 2026 budget",
+      "publisher": "City of Your City",
+      "type": "official",
+      "url": "https://example.gov/budget"
+    },
+    "s_households": {
+      "title": "Census household count",
+      "publisher": "Census bureau",
+      "type": "official",
+      "url": "https://example.gov/census"
+    }
+  }
+}

@@ -1,13 +1,37 @@
 {
   "meta": {
-    "city": "Toronto",
+    "id": "toronto",
+    "cityName": "Toronto",
+    "jurisdiction": "City of Toronto",
+    "province": "Ontario",
+    "country": "Canada",
+    "locale": "en-CA",
+    "currency": "CAD",
+    "leader": {
+      "title": "Mayor",
+      "name": "Olivia Chow",
+      "since": "2023-07",
+      "note": "Re-elected October 26, 2026"
+    },
+    "households": 1160890,
+    "householdsNote": "Private households, 2021 Census",
     "baseYear": 2025,
     "compareYear": 2026,
-    "currency": "CAD",
     "lastUpdated": "2026-11-07",
     "status": "2026 budget final (approved by City Council 2026-02-10). 2027 budget not yet released.",
     "units": "Program figures are in millions of dollars ($M) unless noted.",
-    "netDefinition": "Net budget = what a program spends (gross) minus its own revenue (fares, provincial/federal grants, user fees). The net amount is what the City must cover from property tax and city-wide revenues such as the land transfer tax."
+    "netDefinition": "Net budget = what a program spends (gross) minus its own revenue (fares, provincial/federal grants, user fees). The net amount is what the City must cover from property tax and city-wide revenues such as the land transfer tax.",
+    "propertyTax": {
+      "assessmentLabel": "Assessed value",
+      "assessmentHelp": "From your MPAC notice. Toronto still uses 2016 values; the average home is assessed at $692,140.",
+      "excludes": "the provincial education tax",
+      "levyName": "City Building Fund levy (transit & housing)"
+    },
+    "budgetProcess": "Under Ontario's 'strong mayor' rules the Mayor proposes the budget, Council can amend it, the Mayor can veto amendments, and Council needs a two-thirds vote to override.",
+    "sources": [
+      "s_census"
+    ],
+    "methodNote": "Figures come from City of Toronto budget documents (Budget Notes, the Mayor's Budget Report, Council decisions) and service reports, cross-checked against news coverage. Program figures are net operating budgets: the part paid by City revenue after each program's own fares, fees and grants. The 13 services shown are the large, resident-facing ones; the full budget also includes debt payments, corporate accounts and smaller divisions. Per-household figures divide by the number of private households (2021 Census) to give a sense of scale; they are not what any one household pays."
   },
   "headline": {
     "operatingTotalB": 18.9,
@@ -15,14 +39,14 @@
     "rateSupportedGrossB": 2.25,
     "taxSupportedNetB": 5.8,
     "capital10yrB": 63.1,
-    "capital2026B": 5.2,
+    "capitalThisYearB": 5.2,
     "openingGapM": 1340,
     "propertyTaxIncreasePct": 2.2,
     "propertyTaxBasePct": 0.7,
     "cityBuildingLevyPct": 1.5,
     "avgHomeAssessment": 692140,
-    "avgHomeMunicipalTax2026": 4252,
-    "avgHomeIncrease2026": 91.53,
+    "avgHomeMunicipalTax": 4252,
+    "avgHomeIncrease": 91.53,
     "sources": [
       "s_final_release",
       "s_launch",
@@ -90,6 +114,26 @@
         "s_ttc_notes",
         "s_ttc_2025",
         "s_tpra_note"
+      ],
+      "outcomes": [
+        {
+          "metric": "Ridership compared with before the pandemic",
+          "unit": "%",
+          "better": "higher",
+          "before": {
+            "period": "Oct 2025",
+            "value": 78
+          },
+          "after": {
+            "period": "Spring 2026 (year to date)",
+            "value": 82
+          },
+          "note": "Measured on slightly different bases (point in time vs. year to date), so treat the gain as approximate. Peer systems averaged about 84%.",
+          "sources": [
+            "s_global_ttc",
+            "s_ttc_ceo_apr26"
+          ]
+        }
       ]
     },
     {
@@ -102,7 +146,7 @@
         "2025": 1339.0,
         "2026": 1432.9
       },
-      "gross2026": 1704.3,
+      "gross": 1704.3,
       "basis": "official",
       "basisNote": "City Budget Notes: 2026 net $1,432.9M, $93.8M (7.0%) above 2025.",
       "highlights": [
@@ -115,6 +159,26 @@
         "s_cbc_police",
         "s_mayor_report",
         "s_spt"
+      ],
+      "outcomes": [
+        {
+          "metric": "Average response to the most urgent (Priority 1) calls",
+          "unit": "min",
+          "better": "lower",
+          "before": {
+            "period": "2024",
+            "value": 17.1,
+            "derived": true
+          },
+          "after": {
+            "period": "2025",
+            "value": 14.1
+          },
+          "note": "2025 figure from the Chief's Annual Report, which reports a 17.5% drop; 2024 calculated from that. Down from a 23.1-minute average in 2023. No 2026 figure published yet.",
+          "sources": [
+            "s_tps_annual"
+          ]
+        }
       ]
     },
     {
@@ -127,7 +191,7 @@
         "2025": 140.258,
         "2026": 175.187
       },
-      "gross2026": 451.282,
+      "gross": 451.282,
       "basis": "derived",
       "basisNote": "2026 net from Budget Notes; 2025 calculated from the reported +$34.929M (+24.9%) change.",
       "highlights": [
@@ -138,6 +202,23 @@
         "s_paramedic",
         "s_council",
         "s_spt"
+      ],
+      "outcomes": [
+        {
+          "metric": "90th-percentile response to life-threatening calls",
+          "unit": "min",
+          "better": "lower",
+          "before": null,
+          "after": {
+            "period": "Latest (2025 budget docs)",
+            "value": 14.8
+          },
+          "note": "Up 22% since 2019, and fewer than 10% of ambulances were free for about 4 hours a day on average. The 2026 money (94 new positions) is meant to improve this; no 2026 result is published yet.",
+          "sources": [
+            "s_para25",
+            "s_paramedic"
+          ]
+        }
       ]
     },
     {
@@ -150,7 +231,7 @@
         "2025": 549.0,
         "2026": 558.9
       },
-      "gross2026": 587.874,
+      "gross": 587.874,
       "basis": "derived",
       "basisNote": "2026 net $558.9M from Budget Notes; 2025 calculated from the reported +1.8% change.",
       "highlights": [
@@ -160,7 +241,8 @@
         "s_fire",
         "s_mayor_report",
         "s_launch"
-      ]
+      ],
+      "outcomes": []
     },
     {
       "id": "shelter",
@@ -172,7 +254,7 @@
         "2025": 219.875,
         "2026": 235.141
       },
-      "gross2026": 786.068,
+      "gross": 786.068,
       "basis": "derived",
       "basisNote": "2026 net from Budget Notes; 2025 calculated from the reported +$15.266M (+6.9%) change.",
       "highlights": [
@@ -182,6 +264,22 @@
       "sources": [
         "s_tsss",
         "s_council"
+      ],
+      "outcomes": [
+        {
+          "metric": "People who called for a shelter bed and couldn't get one, per night",
+          "unit": "people",
+          "better": "lower",
+          "before": null,
+          "after": {
+            "period": "Jan–Feb 2026",
+            "value": 31.6
+          },
+          "note": "Average of 30.4 (Jan) and 32.8 (Feb). Counts single adults and couples only; families are not included, so real unmet need is higher. About 9,200 people a night were in shelters.",
+          "sources": [
+            "s_shelter_referrals"
+          ]
+        }
       ]
     },
     {
@@ -194,7 +292,7 @@
         "2025": 581.876,
         "2026": 597.635
       },
-      "gross2026": 866.632,
+      "gross": 866.632,
       "basis": "derived",
       "basisNote": "2026 net from Budget Notes; 2025 calculated from the reported +$15.759M (+2.7%) change.",
       "highlights": [
@@ -203,7 +301,8 @@
       "sources": [
         "s_housing",
         "s_council"
-      ]
+      ],
+      "outcomes": []
     },
     {
       "id": "tchc",
@@ -215,7 +314,7 @@
         "2025": 327.466,
         "2026": 329.985
       },
-      "gross2026": 666.21,
+      "gross": 666.21,
       "basis": "derived",
       "basisNote": "City operating funding to TCHC per Budget Notes ($329.985M, +$2.519M).",
       "highlights": [
@@ -223,7 +322,8 @@
       ],
       "sources": [
         "s_tchc"
-      ]
+      ],
+      "outcomes": []
     },
     {
       "id": "tess",
@@ -242,7 +342,8 @@
         "s_tess26",
         "s_tess25",
         "s_council"
-      ]
+      ],
+      "outcomes": []
     },
     {
       "id": "children",
@@ -262,7 +363,8 @@
       "sources": [
         "s_children",
         "s_staff_appendix"
-      ]
+      ],
+      "outcomes": []
     },
     {
       "id": "health",
@@ -283,7 +385,8 @@
         "s_tph",
         "s_final_release",
         "s_mayor_release"
-      ]
+      ],
+      "outcomes": []
     },
     {
       "id": "library",
@@ -304,6 +407,23 @@
       "sources": [
         "s_tpl",
         "s_spt"
+      ],
+      "outcomes": [
+        {
+          "metric": "Sunday visits after all branches opened Sundays",
+          "unit": "%",
+          "better": "higher",
+          "before": null,
+          "after": {
+            "period": "Oct–Dec 2025 vs. 2024",
+            "value": 50,
+            "prefix": "+"
+          },
+          "note": "Result of the 2025 Sunday-hours expansion, which the 2026 budget extends to seven days a week.",
+          "sources": [
+            "s_tpl_sundays"
+          ]
+        }
       ]
     },
     {
@@ -321,7 +441,8 @@
       "highlights": [],
       "sources": [
         "s_parks"
-      ]
+      ],
+      "outcomes": []
     },
     {
       "id": "transportation",
@@ -340,7 +461,8 @@
       ],
       "sources": [
         "s_transport"
-      ]
+      ],
+      "outcomes": []
     }
   ],
   "gapClosing": {
@@ -413,7 +535,7 @@
       }
     ]
   },
-  "revenue2026": {
+  "revenue": {
     "totalB": 18.9,
     "note": "Approximate. Shares come from news and City summaries that use slightly different bases; 'Everything else' is the remainder needed to reach the $18.9B total.",
     "parts": [
@@ -461,34 +583,36 @@
         "derived": true,
         "sources": []
       }
-    ]
+    ],
+    "year": 2026
   },
-  "utilityRates2026": {
+  "utilityRates": {
     "waterIncreasePct": 3.75,
     "solidWasteIncreasePct": 3.75,
     "garbageBins": [
       {
         "size": "Small",
-        "fee2026": 317.85
+        "fee": 317.85
       },
       {
         "size": "Medium",
-        "fee2026": 385.86
+        "fee": 385.86
       },
       {
         "size": "Large",
-        "fee2026": 524.06
+        "fee": 524.06
       },
       {
         "size": "Extra large",
-        "fee2026": 607.86
+        "fee": 607.86
       }
     ],
     "note": "Single-family annual solid waste fees. 2025 fee derived by removing the 3.75% increase; matches the City's published $11.49–$21.97 increase range.",
     "sources": [
       "s_rates",
       "s_globalnews_launch"
-    ]
+    ],
+    "year": 2026
   },
   "capital": {
     "totalB": 63.1,
@@ -496,40 +620,42 @@
     "rateSupportedB": 20.5,
     "stateOfGoodRepairPct": 53,
     "year2026B": 5.2,
-    "unfundedTransitExpansionB": 31.7,
     "note": "Largest 10-year capital plan in City history (2026–2035). Over half goes to repairing what already exists. $31.7B of transit expansion is not funded.",
     "sources": [
       "s_capital",
       "s_budget_summary"
-    ]
+    ],
+    "unfundedB": 31.7,
+    "unfundedLabel": "Transit expansion projects with no money attached yet"
   },
   "inYear": {
     "asOf": "2026-04-30",
-    "taxSupportedProjectedM": -97.4,
-    "rateSupportedProjectedM": 32.7,
-    "ttcProjectedM": -64.3,
     "note": "Snapshot from the City's first 2026 operating variance report (four months). Negative = projected overspend / shortfall by year-end. Later reports may differ.",
     "sources": [
       "s_variance",
       "s_ttc_variance"
-    ]
-  },
-  "outlook2027": {
-    "gapLowB": 1.1,
-    "gapHighB": 1.5,
-    "points": [
-      "The City's own outlook projected about a $1.1B shortfall going into 2027.",
-      "Including expected reductions in provincial and federal funding, City Hall columnist Matt Elliott estimates about $1.5B.",
-      "$323M of 2026 'bridging' money from reserves was one-time and must be replaced.",
-      "The TTC fare cap is planned to drop from 47 to 40 rides a month in 2027, which costs fare revenue.",
-      "Mayor Olivia Chow was re-elected on October 26, 2026, so the 2027 budget will again be a 'strong mayor' budget she proposes."
     ],
-    "sources": [
-      "s_cbc_council",
-      "s_elliott",
-      "s_launch",
-      "s_election"
-    ]
+    "lines": [
+      {
+        "label": "Tax-supported services",
+        "valueM": -97.4
+      },
+      {
+        "label": "of which TTC",
+        "valueM": -64.3
+      },
+      {
+        "label": "Water & garbage",
+        "valueM": 32.7
+      }
+    ],
+    "priorYear": {
+      "label": "Same point-ish last year (June 30, 2025)",
+      "valueM": -105.4,
+      "sources": [
+        "s_variance25"
+      ]
+    }
   },
   "timeline": [
     {
@@ -619,10 +745,11 @@
       "date": "2026-07",
       "label": "Summer 2026",
       "kind": "effect",
-      "title": "All libraries open 7 days a week",
-      "detail": "Every one of the 100 Toronto Public Library branches open seven days a week.",
+      "title": "All libraries open 7 days a week (planned)",
+      "detail": "Target date for all 100 branches to open seven days a week. Completion not yet confirmed publicly.",
       "sources": [
-        "s_spt"
+        "s_tpl_sundays",
+        "s_tpl_june26"
       ]
     },
     {
@@ -630,10 +757,9 @@
       "label": "Sep 2026",
       "kind": "effect",
       "title": "TTC fare cap begins (47 rides)",
-      "detail": "After 47 paid rides in a calendar month, the rest of the month's rides are free.",
+      "detail": "Took effect September 1, 2026: after 47 paid rides in a calendar month, the rest of the month's rides are free. Monthly passes ended August 31.",
       "sources": [
-        "s_mayor_release",
-        "s_cbc_mayor"
+        "s_ttc_farecap"
       ]
     },
     {
@@ -912,6 +1038,226 @@
       "publisher": "Wikipedia",
       "type": "reference",
       "url": "https://en.wikipedia.org/wiki/2026_Toronto_mayoral_election"
+    },
+    "s_census": {
+      "title": "2021 Census Backgrounder: Housing",
+      "publisher": "City of Toronto",
+      "type": "official",
+      "url": "https://www.toronto.ca/wp-content/uploads/2022/09/8e3a-CityPlanning-2021-Census-Backgrounder-Housing-Indigenous-Peoples.pdf"
+    },
+    "s_variance25": {
+      "title": "Operating Variance Report for the Six Months Ended June 30, 2025",
+      "publisher": "City of Toronto",
+      "type": "official",
+      "url": "https://www.toronto.ca/legdocs/mmis/2025/ex/bgrd/backgroundfile-258553.pdf"
+    },
+    "s_tps_annual": {
+      "title": "2025 Toronto Police Service Chief's Annual Report",
+      "publisher": "Toronto Police Service",
+      "type": "official",
+      "url": "https://www.tps.ca/media/filer_public/f1/f1/f1f1cd5f-ce16-4577-b3ec-bf1cd25fd935/5bd9cc5a-f0bb-43bc-94bb-00cb21fb3a37.pdf"
+    },
+    "s_para25": {
+      "title": "2025 Program Summary: Toronto Paramedic Services",
+      "publisher": "City of Toronto",
+      "type": "official",
+      "url": "https://www.toronto.ca/wp-content/uploads/2025/04/8d5d-2025-Public-Book-PS-V1.pdf"
+    },
+    "s_ttc_ceo_apr26": {
+      "title": "TTC CEO's Report, April 2026",
+      "publisher": "TTC",
+      "type": "official",
+      "url": "https://cdn.ttc.ca/-/media/Project/TTC/DevProto/Documents/Home/Transparency-and-accountability/April-CEO-Report-2026---Bus---FINAL.pdf"
+    },
+    "s_global_ttc": {
+      "title": "Toronto transit ridership sputters, failing to hit projections",
+      "publisher": "Global News",
+      "type": "news",
+      "url": "https://globalnews.ca/news/11589127/ttc-ridership-fall-2025/"
+    },
+    "s_shelter_referrals": {
+      "title": "Shelter System Requests for Referrals",
+      "publisher": "City of Toronto",
+      "type": "official",
+      "url": "https://www.toronto.ca/city-government/data-research-maps/research-reports/housing-and-homelessness-research-and-reports/shelter-system-requests-for-referrals/"
+    },
+    "s_tpl_sundays": {
+      "title": "City Council approves 2026 budget to expand library hours and services",
+      "publisher": "Toronto Public Library",
+      "type": "official",
+      "url": "https://tpl.ca/news/city-council-approves-2026-budget-to-expand-library-hours-and-services/"
+    },
+    "s_ttc_farecap": {
+      "title": "Monthly fare capping now in effect at the TTC",
+      "publisher": "TTC",
+      "type": "official",
+      "url": "https://www.ttc.ca/news/2026/September/Monthly-fare-capping-now-in-effect-at-the-TTC"
+    },
+    "s_tpl_june26": {
+      "title": "City Librarian's Report for June 2026",
+      "publisher": "Toronto Public Library",
+      "type": "official",
+      "url": "https://tpl.ca/news/city-librarians-report-for-june-2026/"
     }
-  }
+  },
+  "checks": {
+    "reportedChanges": {
+      "police": [
+        93.8,
+        7.0
+      ],
+      "paramedics": [
+        34.929,
+        24.9
+      ],
+      "fire": [
+        null,
+        1.8
+      ],
+      "shelter": [
+        15.266,
+        6.9
+      ],
+      "housing": [
+        15.759,
+        2.7
+      ],
+      "tchc": [
+        2.519,
+        null
+      ],
+      "children": [
+        1.817,
+        1.8
+      ],
+      "health": [
+        null,
+        10.1
+      ],
+      "library": [
+        19.834,
+        7.8
+      ],
+      "parks": [
+        19.9,
+        5.6
+      ],
+      "transportation": [
+        -25.046,
+        -7.6
+      ],
+      "ttc": [
+        94,
+        null
+      ]
+    },
+    "avgHomeIncrease": 91.53,
+    "garbageIncreases": {
+      "Small": 11.49,
+      "Extra large": 21.97
+    }
+  },
+  "commitments": [
+    {
+      "id": "fare-freeze",
+      "program": "ttc",
+      "promise": "Freeze TTC fares for 2026 (third year in a row)",
+      "status": "delivered",
+      "evidence": "No fare increase in 2026.",
+      "sources": [
+        "s_final_release"
+      ]
+    },
+    {
+      "id": "fare-cap",
+      "program": "ttc",
+      "promise": "Monthly fare cap: free rides after 47 paid trips, starting September 2026",
+      "status": "delivered",
+      "evidence": "Fare capping took effect September 1, 2026, on PRESTO and debit/credit tap.",
+      "sources": [
+        "s_ttc_farecap"
+      ]
+    },
+    {
+      "id": "libraries-7",
+      "program": "library",
+      "promise": "All 100 library branches open 7 days a week by July 2026",
+      "status": "unverified",
+      "evidence": "Planned for July 2026 (June 2026 library report still listed it as upcoming). We found no public confirmation it was completed.",
+      "sources": [
+        "s_tpl_sundays",
+        "s_tpl_june26"
+      ]
+    },
+    {
+      "id": "nutrition",
+      "program": "health",
+      "promise": "Expand student nutrition to about 330,000 students a day in 841 schools",
+      "status": "unverified",
+      "evidence": "Funded in the final budget. No delivery report found yet.",
+      "sources": [
+        "s_final_release"
+      ]
+    },
+    {
+      "id": "police-hiring",
+      "program": "police",
+      "promise": "Hire 360 police officers in 2026 (about 143 net new)",
+      "status": "unverified",
+      "evidence": "Funded ($20.5M). No year-end hiring report yet.",
+      "sources": [
+        "s_cbc_police",
+        "s_spt"
+      ]
+    },
+    {
+      "id": "paramedic-hiring",
+      "program": "paramedics",
+      "promise": "Add 94 permanent paramedic positions to improve response times",
+      "status": "unverified",
+      "evidence": "Funded ($15.2M gross, $7.0M net). No 2026 response-time results published yet.",
+      "sources": [
+        "s_paramedic"
+      ]
+    },
+    {
+      "id": "on-budget",
+      "program": null,
+      "promise": "Deliver services within the approved budget",
+      "status": "at_risk",
+      "evidence": "As of April 30, the City projected a $97.4M overspend on tax-supported services (TTC: $64.3M).",
+      "sources": [
+        "s_variance"
+      ]
+    },
+    {
+      "id": "fare-cap-40",
+      "program": "ttc",
+      "promise": "Lower the fare cap to 40 rides a month in 2027",
+      "status": "upcoming",
+      "evidence": "Planned for 2027; depends on the 2027 budget.",
+      "sources": [
+        "s_mayor_release"
+      ]
+    }
+  ],
+  "outlook": {
+    "year": 2027,
+    "gapLowB": 1.1,
+    "gapHighB": 1.5,
+    "points": [
+      "The City's own outlook projected about a $1.1B shortfall going into 2027.",
+      "Including expected reductions in provincial and federal funding, City Hall columnist Matt Elliott estimates about $1.5B.",
+      "$323M of 2026 'bridging' money from reserves was one-time and must be replaced.",
+      "The TTC fare cap is planned to drop from 47 to 40 rides a month in 2027, which costs fare revenue.",
+      "Mayor Olivia Chow was re-elected on October 26, 2026, so the 2027 budget will again be a 'strong mayor' budget she proposes."
+    ],
+    "sources": [
+      "s_cbc_council",
+      "s_elliott",
+      "s_launch",
+      "s_election"
+    ]
+  },
+  "taxHistoryNote": "2026 was an election year; its increase was the smallest of the current mayor's term."
 }

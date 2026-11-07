@@ -42,27 +42,27 @@ export function summarizeDeltas(rows) {
 /** Effective municipal tax rate implied by the City's own average-home example. */
 export function municipalRate(data) {
   const h = data.headline;
-  return h.avgHomeMunicipalTax2026 / h.avgHomeAssessment;
+  return h.avgHomeMunicipalTax / h.avgHomeAssessment;
 }
 
 /**
  * Estimate a homeowner's municipal property tax (excludes the provincial education portion).
- * Toronto assessments are frozen at 2016 values, so the same assessment applies both years.
+ * Assumes the same assessed value both years (true where assessments are frozen, e.g. Ontario).
  */
 export function estimateTax(data, assessed) {
   const rate = municipalRate(data);
   const pct = data.headline.propertyTaxIncreasePct / 100;
-  const tax2026 = assessed * rate;
-  const tax2025 = tax2026 / (1 + pct);
-  const increase = tax2026 - tax2025;
-  return { tax2025, tax2026, increase, monthly: increase / 12 };
+  const taxAfter = assessed * rate;
+  const taxBefore = taxAfter / (1 + pct);
+  const increase = taxAfter - taxBefore;
+  return { taxBefore, taxAfter, increase, monthly: increase / 12 };
 }
 
 export function garbageFees(data, size) {
-  const u = data.utilityRates2026;
+  const u = data.utilityRates;
   const bin = u.garbageBins.find((b) => b.size === size) ?? u.garbageBins[1];
-  const fee2025 = bin.fee2026 / (1 + u.solidWasteIncreasePct / 100);
-  return { size: bin.size, fee2026: bin.fee2026, fee2025, increase: bin.fee2026 - fee2025 };
+  const feeBefore = bin.fee / (1 + u.solidWasteIncreasePct / 100);
+  return { size: bin.size, fee: bin.fee, feeBefore, increase: bin.fee - feeBefore };
 }
 
 /**
@@ -96,4 +96,48 @@ export function referencedSourceIds(data) {
   };
   walk(data);
   return ids;
+}
+
+/* ---------- evaluation helpers ---------- */
+
+/** Convert a $M amount to dollars per household. */
+export function perHousehold(data, amountM) {
+  return (amountM * 1e6) / data.meta.households;
+}
+
+export const COMMITMENT_STATUSES = ["delivered", "at_risk", "unverified", "not_delivered", "upcoming"];
+
+export function commitmentSummary(data) {
+  const counts = Object.fromEntries(COMMITMENT_STATUSES.map((s) => [s, 0]));
+  for (const c of data.commitments ?? []) counts[c.status] = (counts[c.status] ?? 0) + 1;
+  const total = (data.commitments ?? []).length;
+  const due = total - counts.upcoming; // promises whose deadline has arrived or that are ongoing
+  return { counts, total, due };
+}
+
+export function commitmentsFor(data, programId) {
+  return (data.commitments ?? []).filter((c) => c.program === programId);
+}
+
+/**
+ * Direction of an outcome metric. Returns "improved" | "worsened" | "flat" | "none" (no comparison point).
+ */
+export function outcomeDirection(o) {
+  if (!o.before || o.before.value == null || !o.after) return "none";
+  const diff = o.after.value - o.before.value;
+  if (Math.abs(diff) < 1e-9) return "flat";
+  const up = diff > 0;
+  return (o.better === "higher") === up ? "improved" : "worsened";
+}
+
+/** Totals used to compare new spending against what the average household paid. */
+export function householdComparison(data) {
+  const { baseYear, compareYear } = data.meta;
+  const s = summarizeDeltas(computeDeltas(data, baseYear, compareYear));
+  const avgIncrease = data.headline.avgHomeIncrease ?? estimateTax(data, data.headline.avgHomeAssessment).increase;
+  return {
+    newSpendingPerHousehold: perHousehold(data, s.increaseTotal),
+    netChangePerHousehold: perHousehold(data, s.netChange),
+    avgTaxIncrease: avgIncrease,
+  };
 }

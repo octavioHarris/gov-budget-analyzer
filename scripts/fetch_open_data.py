@@ -5,7 +5,7 @@ Usage:
     python3 scripts/fetch_open_data.py            # list matching datasets and their files
     python3 scripts/fetch_open_data.py --download # also save CSV/XLSX files to data/raw/<dataset>/
 
-The downloaded files are the raw material for updating data/toronto-budget.json
+The downloaded files are the raw material for updating data/cities/<city>.json
 (for example, adding a "2027" value to each program's "net" object). Mapping is
 done by hand on purpose: the City's division names and groupings change between
 years, and every figure on the site should be checked against the Budget Notes.

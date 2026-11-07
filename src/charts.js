@@ -73,7 +73,7 @@ export function hbars(container, items, opts = {}) {
   const width = Math.max(300, container.clientWidth || 640);
   const svg = el("svg", { role: "img", "aria-label": opts.ariaLabel || "Bar chart" }, container);
 
-  const narrow = width < 560;
+  const narrow = width < 440;
   const labelW = narrow ? 0 : Math.min(240, Math.max(...items.map((d) => measureText(svg, d.label, "cat-label"))) + 16);
   const valueW = Math.max(...items.map((d) => measureText(svg, d.valueLabel, "value-label"))) + 10;
   const labelRow = narrow ? 18 : 0;

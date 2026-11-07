@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Toronto Budget Explained</title>
-  <meta name="description" content="A plain-language look at what changed in Toronto's 2026 city budget: where new money went, what was cut, how the gap was closed, and what it means for your tax bill.">
+  <title>Budget Scorecard</title>
+  <meta name="description" content="Evaluate your city's budget: what you pay differently, where the new money went, whether promises were delivered, and whether it adds up.">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -14,17 +14,21 @@
     <div class="wrap header-row">
       <div class="brand">
         <span class="brand-mark" aria-hidden="true"></span>
-        <span>Toronto Budget Explained</span>
+        <span id="brandName">Budget Scorecard</span>
       </div>
       <nav class="toc" aria-label="Sections">
-        <a href="#changes">What changed</a>
-        <a href="#gap">How it balanced</a>
-        <a href="#you">Your bill</a>
-        <a href="#money">Money in</a>
-        <a href="#when">When</a>
-        <a href="#next">2027</a>
+        <a href="#pay">You pay</a>
+        <a href="#where">Where it went</a>
+        <a href="#deliver">Delivered?</a>
+        <a href="#sustain">Adds up?</a>
+        <a href="#scorecard">Your scorecard</a>
+        <a href="#when">Timeline</a>
         <a href="#sources">Sources</a>
       </nav>
+      <label class="city-pick" id="cityPickWrap" hidden>
+        <span class="sr-only">City</span>
+        <select id="cityPick"></select>
+      </label>
       <button class="theme-toggle" type="button" id="themeToggle" aria-label="Toggle dark mode"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg></button>
     </div>
   </header>
@@ -32,121 +36,138 @@
   <main id="main">
     <!-- HERO -->
     <section class="hero wrap" aria-labelledby="hero-title">
-      <p class="eyebrow" id="statusLine">2026 budget · final</p>
-      <h1 id="hero-title">What changed in Toronto's 2026 budget, in five minutes.</h1>
-      <p class="lede">
-        The City spends about <strong>$18.9 billion</strong> a year to run services. Most of it is the same as
-        last year. This page focuses on the part that <em>changed</em>: which services got more money, which got
-        less, how a $1.34 billion hole was filled, and what it costs you.
-      </p>
+      <p class="eyebrow" id="statusLine"></p>
+      <h1 id="hero-title"></h1>
+      <p class="lede" id="heroLede"></p>
       <div class="tiles" id="heroTiles"></div>
+      <ol class="steps" aria-label="How to use this page">
+        <li><a href="#pay"><b>1</b> What you pay</a></li>
+        <li><a href="#where"><b>2</b> Where it went</a></li>
+        <li><a href="#deliver"><b>3</b> Did it deliver?</a></li>
+        <li><a href="#sustain"><b>4</b> Does it add up?</a></li>
+        <li><a href="#scorecard"><b>5</b> Your verdict</a></li>
+      </ol>
     </section>
 
-    <!-- CHANGES -->
-    <section class="band" id="changes" aria-labelledby="changes-title">
+    <!-- 1. PAY -->
+    <section class="band" id="pay" aria-labelledby="pay-title">
       <div class="wrap">
         <div class="section-head">
-          <p class="kicker">1 · The deltas</p>
-          <h2 id="changes-title">Who got more, who got less</h2>
-          <p class="section-sub" id="changesSub">Change in each service's City-funded (net) budget, 2025 → 2026. Tap a bar for details.</p>
+          <p class="kicker">1 · What you pay</p>
+          <h2 id="pay-title">What you're paying differently</h2>
+          <p class="section-sub" id="paySub"></p>
         </div>
-
-        <div class="controls" role="group" aria-label="Chart options">
-          <div class="seg" role="radiogroup" aria-label="Show change as">
-            <button type="button" role="radio" aria-checked="true" data-measure="abs">Dollars</button>
-            <button type="button" role="radio" aria-checked="false" data-measure="pct">Percent</button>
+        <div class="split split-wide">
+          <div class="card">
+            <form class="calc" id="calc" onsubmit="return false">
+              <label for="assess" id="assessLabel">Assessed value</label>
+              <div class="input-dollar">
+                <span aria-hidden="true">$</span>
+                <input id="assess" inputmode="numeric" autocomplete="off" aria-describedby="assessHelp">
+              </div>
+              <p id="assessHelp" class="muted small"></p>
+              <div id="binWrap">
+                <label for="bin">Garbage bin size</label>
+                <select id="bin"></select>
+              </div>
+            </form>
+            <div id="calcOut" class="calc-out" aria-live="polite"></div>
           </div>
-          <div class="seg" role="radiogroup" aria-label="View">
-            <button type="button" role="radio" aria-checked="true" data-view="chart">Chart</button>
-            <button type="button" role="radio" aria-checked="false" data-view="table">Table</button>
-          </div>
-        </div>
-
-        <div class="card chart-card">
-          <div id="deltaChart" class="chart" aria-live="polite"></div>
-          <div id="deltaTable" class="table-wrap" hidden></div>
-          <p class="chart-foot" id="deltaFoot"></p>
-        </div>
-
-        <div class="split">
-          <div class="card" id="programDetail" aria-live="polite"></div>
-          <div class="card callout">
-            <h3>How to read "net"</h3>
-            <p id="netDef"></p>
-            <p class="muted small">Inflation alone is roughly 2–3% a year, so a small increase can still mean a service is doing the same or less in real terms.</p>
-            <div class="legend-badges">
-              <span class="badge badge-official">Official</span> both years from City budget documents
-              <br><span class="badge badge-derived">Derived</span> 2025 back-calculated from the change the City reported
-              <br><span class="badge badge-approx">Approx.</span> rounded figures from news coverage
+          <div class="stack">
+            <div class="card" id="householdCompare"></div>
+            <div class="card">
+              <h3 id="taxHistoryTitle">Property tax increases</h3>
+              <p class="muted small">Total increase each year, including any dedicated levy.</p>
+              <div id="taxHistory" class="chart"></div>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- GAP -->
-    <section class="wrap section" id="gap" aria-labelledby="gap-title">
+    <!-- 2. WHERE -->
+    <section class="wrap section" id="where" aria-labelledby="where-title">
       <div class="section-head">
-        <p class="kicker">2 · Cuts &amp; savings</p>
-        <h2 id="gap-title">How a $1.34 billion hole was filled</h2>
+        <p class="kicker">2 · Where it went</p>
+        <h2 id="where-title">Where the new money went</h2>
+        <p class="section-sub" id="whereSub"></p>
+      </div>
+
+      <div class="controls" role="group" aria-label="Chart options">
+        <div class="seg" role="radiogroup" aria-label="Show change as">
+          <button type="button" role="radio" aria-checked="true" data-measure="abs">Total $</button>
+          <button type="button" role="radio" aria-checked="false" data-measure="hh">Per household</button>
+          <button type="button" role="radio" aria-checked="false" data-measure="pct">Percent</button>
+        </div>
+        <div class="seg" role="radiogroup" aria-label="View">
+          <button type="button" role="radio" aria-checked="true" data-view="chart">Chart</button>
+          <button type="button" role="radio" aria-checked="false" data-view="table">Table</button>
+        </div>
+      </div>
+
+      <div class="split split-even">
+        <div class="card chart-card">
+          <div id="deltaChart" class="chart" aria-live="polite"></div>
+          <div id="deltaTable" class="table-wrap" hidden></div>
+          <p class="chart-foot" id="deltaFoot"></p>
+        </div>
+        <div class="card" id="programDetail" aria-live="polite"></div>
+      </div>
+      <details class="explainer">
+        <summary>How to read these numbers</summary>
+        <p id="netDef"></p>
+        <p>Inflation alone is roughly 2–3% a year, so a small increase can still mean a service is doing the same or less in real terms.</p>
+        <p class="legend-badges">
+          <span class="badge badge-official">Official</span> both years from government budget documents ·
+          <span class="badge badge-derived">Derived</span> earlier year back-calculated from the change the government reported ·
+          <span class="badge badge-approx">Approx.</span> rounded figures from news coverage
+        </p>
+      </details>
+    </section>
+
+    <!-- 3. DELIVER -->
+    <section class="band" id="deliver" aria-labelledby="deliver-title">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="kicker">3 · Did it deliver?</p>
+          <h2 id="deliver-title">Promises and results</h2>
+          <p class="section-sub">What the budget said it would do, whether it happened, and whether the services got measurably better. "Not yet verified" means we couldn't find public evidence either way; it is not the same as "broken."</p>
+        </div>
+        <div class="promise-summary" id="promiseSummary"></div>
+        <div class="split split-even">
+          <div class="card">
+            <h3>Budget promises</h3>
+            <ul class="promises" id="promiseList"></ul>
+          </div>
+          <div class="card">
+            <h3>Service results</h3>
+            <p class="muted small">Latest published measures for services that got more money. Many results lag the budget by a year or more.</p>
+            <div id="outcomeList" class="outcomes"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. SUSTAIN -->
+    <section class="wrap section" id="sustain" aria-labelledby="sustain-title">
+      <div class="section-head">
+        <p class="kicker">4 · Does it add up?</p>
+        <h2 id="sustain-title">How it was balanced, and whether it lasts</h2>
         <p class="section-sub" id="gapSub"></p>
       </div>
       <div class="split split-wide">
         <div class="card">
+          <h3 id="gapTitle">How the gap was closed</h3>
           <div id="gapChart" class="chart"></div>
           <p class="chart-foot" id="gapFoot"></p>
         </div>
-        <div class="card callout">
-          <h3>Why this matters</h3>
-          <p>
-            Two kinds of tools closed the gap. <strong>Savings</strong> (cuts, efficiencies, hiring freezes) are
-            usually permanent. <strong>Reserve draws</strong> spend money the City had saved up. They work for one
-            year, but the same hole comes back the next year unless something else fills it.
-          </p>
-          <p id="gapReserveShare"></p>
+        <div class="stack">
+          <div class="card" id="inYear"></div>
+          <div class="card" id="outlook"></div>
         </div>
       </div>
-    </section>
-
-    <!-- YOU -->
-    <section class="band" id="you" aria-labelledby="you-title">
-      <div class="wrap">
-        <div class="section-head">
-          <p class="kicker">3 · Your wallet</p>
-          <h2 id="you-title">What it means for your bill</h2>
-          <p class="section-sub">Enter your home's assessed value from your MPAC notice (Toronto still uses 2016 values). Renters pay this indirectly through rent.</p>
-        </div>
-        <div class="split split-wide">
-          <div class="card">
-            <form class="calc" id="calc" onsubmit="return false">
-              <label for="assess">Assessed value</label>
-              <div class="input-dollar">
-                <span aria-hidden="true">$</span>
-                <input id="assess" inputmode="numeric" autocomplete="off" value="692,140" aria-describedby="assessHelp">
-              </div>
-              <p id="assessHelp" class="muted small">Toronto's average home is assessed at $692,140.</p>
-              <label for="bin">Garbage bin size</label>
-              <select id="bin"></select>
-            </form>
-            <div id="calcOut" class="calc-out" aria-live="polite"></div>
-          </div>
-          <div class="card">
-            <h3>Property tax increases under Mayor Chow</h3>
-            <p class="muted small">Total increase each year, including the 1.5% City Building Fund levy for transit and housing.</p>
-            <div id="taxHistory" class="chart"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- MONEY IN -->
-    <section class="wrap section" id="money" aria-labelledby="money-title">
-      <div class="section-head">
-        <p class="kicker">4 · Money in</p>
-        <h2 id="money-title">Where the $18.9 billion comes from</h2>
-        <p class="section-sub">Property tax pays for less than a third of the City's operating budget.</p>
-      </div>
-      <div class="card">
+      <div class="card" style="margin-top:16px">
+        <h3 id="revenueTitle">Where the money comes from</h3>
         <div id="revenueBar"></div>
         <ul id="revenueLegend" class="rev-legend"></ul>
         <p class="chart-foot" id="revenueFoot"></p>
@@ -154,37 +175,40 @@
       <div class="tiles tiles-3" id="capitalTiles"></div>
     </section>
 
-    <!-- WHEN -->
-    <section class="band" id="when" aria-labelledby="when-title">
+    <!-- 5. SCORECARD -->
+    <section class="band" id="scorecard" aria-labelledby="scorecard-title">
       <div class="wrap">
         <div class="section-head">
-          <p class="kicker">5 · Timing</p>
-          <h2 id="when-title">When decisions were made, and when you feel them</h2>
-          <p class="section-sub">How the budget moved from staff to Mayor to Council, and when the changes actually reach residents.</p>
+          <p class="kicker">5 · Your verdict</p>
+          <h2 id="scorecard-title">Your scorecard</h2>
+          <p class="section-sub">Rate each service's change, either here or in "Where it went." Your ratings stay in this browser and are never sent anywhere.</p>
         </div>
-        <div class="controls" role="group" aria-label="Filter timeline">
-          <div class="seg" role="radiogroup" aria-label="Timeline filter" id="tlFilter">
-            <button type="button" role="radio" aria-checked="true" data-kind="all">All</button>
-            <button type="button" role="radio" aria-checked="false" data-kind="process">Decisions</button>
-            <button type="button" role="radio" aria-checked="false" data-kind="effect">Takes effect</button>
-            <button type="button" role="radio" aria-checked="false" data-kind="tracking">Check-ups</button>
-            <button type="button" role="radio" aria-checked="false" data-kind="upcoming">Coming up</button>
+        <div class="split split-wide">
+          <div class="card">
+            <ul class="verdict-list" id="verdictList"></ul>
           </div>
+          <div class="card" id="scoreSummary" aria-live="polite"></div>
         </div>
-        <ol class="timeline" id="timeline"></ol>
       </div>
     </section>
 
-    <!-- NEXT -->
-    <section class="wrap section" id="next" aria-labelledby="next-title">
+    <!-- TIMELINE -->
+    <section class="wrap section" id="when" aria-labelledby="when-title">
       <div class="section-head">
-        <p class="kicker">6 · Looking ahead</p>
-        <h2 id="next-title">Is it on track, and what's coming in 2027?</h2>
+        <p class="kicker">Timeline</p>
+        <h2 id="when-title">When decisions were made, and when you feel them</h2>
+        <p class="section-sub" id="processNote"></p>
       </div>
-      <div class="split split-wide">
-        <div class="card" id="inYear"></div>
-        <div class="card" id="outlook"></div>
+      <div class="controls" role="group" aria-label="Filter timeline">
+        <div class="seg" role="radiogroup" aria-label="Timeline filter" id="tlFilter">
+          <button type="button" role="radio" aria-checked="true" data-kind="all">All</button>
+          <button type="button" role="radio" aria-checked="false" data-kind="process">Decisions</button>
+          <button type="button" role="radio" aria-checked="false" data-kind="effect">Takes effect</button>
+          <button type="button" role="radio" aria-checked="false" data-kind="tracking">Check-ups</button>
+          <button type="button" role="radio" aria-checked="false" data-kind="upcoming">Coming up</button>
+        </div>
       </div>
+      <ol class="timeline" id="timeline"></ol>
     </section>
 
     <!-- SOURCES -->
@@ -195,17 +219,10 @@
           <h2 id="sources-title">Where every number comes from</h2>
         </div>
         <div class="card prose">
+          <p id="methodNote"></p>
           <p>
-            Figures come from City of Toronto budget documents (Budget Notes, the Mayor's Budget Report, Council
-            decisions), cross-checked against news coverage. Program-level numbers are <strong>net operating
-            budgets</strong>, meaning the part paid by City revenue after a program's own fares, fees and grants.
-            The 13 programs shown are the large, resident-facing services; the full budget also includes debt
-            payments, corporate accounts and smaller divisions not shown here.
-          </p>
-          <p>
-            This is an independent, non-partisan explainer, not an official City product. If you spot an error,
-            please open an issue on the project's repository. Each number on the page links to the document it
-            came from below.
+            This is an independent, non-partisan explainer, not an official government product. Ratings on this
+            page are yours alone. If you spot an error, please open an issue on the project's repository.
           </p>
           <ul class="source-list" id="sourceList"></ul>
         </div>
@@ -214,9 +231,7 @@
   </main>
 
   <footer class="site-footer">
-    <div class="wrap">
-      <span id="footUpdated"></span>
-    </div>
+    <div class="wrap"><span id="footUpdated"></span></div>
   </footer>
 
   <div id="tooltip" class="tooltip" role="tooltip" hidden></div>

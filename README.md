@@ -1,79 +1,71 @@
-# Toronto Budget Explained
+# Budget Scorecard
 
-A plain-language, one-page visualizer of **what changed** in the City of Toronto's budget from one year
-to the next, written for the average voter rather than budget analysts.
+A plain-language, one-page tool that helps voters **evaluate** their city's budget: what they're paying
+differently, where the new money went, whether promises were delivered, and whether the numbers add up.
+It starts with the City of Toronto's 2026 budget, but the code works for any city: each city is one data file.
 
-Most of an $18.9B budget is the same every year. People can only focus on so much, so the page
-skips the full line-by-line budget and covers six questions:
+## What's on the page
 
-1. **Who got more, who got less?** A diverging bar chart of the year-over-year change in each major
-   service's City-funded (net) budget. Tap a service to see what the money buys, before/after
-   figures and the source documents. You can switch between dollars and percent, or open a table view.
-2. **How was the gap closed?** The $1.34B opening shortfall, and the cuts, efficiencies and reserve
-   draws used to close it. Permanent savings and one-time reserve money are shown in different colours.
-3. **What does it cost me?** A property-tax calculator: enter your MPAC assessed value to see your
-   increase, your garbage-fee change, and a rough split of your bill across services. It also shows the
-   tax-increase history under the current mayor.
-4. **Where does the money come from?** Revenue mix (property tax is under a third) and the 10-year
-   capital plan.
-5. **When does it happen?** A timeline covering the decision process (staff → Mayor → Council under
-   strong-mayor rules) and the dates changes reach residents (fare cap, library hours, new rates),
-   with a "today" marker and upcoming 2027 milestones.
-6. **Is it on track, and what's next?** In-year variance (projected overspend) and the 2027 outlook.
-
-Every number cites its source. Program figures carry a badge:
-**Official** (both years taken from City documents), **Derived** (2025 back-calculated from the change
-the City reported), or **Approx.** (rounded figures from news coverage).
+1. **What you pay.** A tax calculator (enter your assessed value, pick your garbage bin), a comparison of
+   new spending per household against the average tax increase, and the tax-increase history.
+2. **Where it went.** The year-over-year change in each service's net budget, shown as total $, per household
+   or percent. Select a service to see what the money is for, the promises attached to it, its measured
+   results, and to give your own verdict.
+3. **Did it deliver?** A promise tracker (Delivered · At risk · Not delivered · Not yet verified · Coming up) and
+   before/after service results (response times, ridership, shelter capacity...).
+4. **Does it add up?** How the opening gap was closed (permanent savings vs. one-time reserve draws), whether
+   the year is on budget, next year's starting gap, the revenue mix and the capital plan.
+5. **Your scorecard.** Your ratings of each change, alongside the key facts, with a "copy my scorecard" button.
+   Ratings stay in your browser.
+6. **Timeline and sources.** When decisions were made and when residents feel them. Every number links to its source.
 
 ## Running it
 
 No dependencies, no framework.
 
 ```bash
-npm start          # serves the site at http://localhost:8000 (python3 http.server)
-npm test           # validates the dataset (arithmetic, sources, reported changes)
-npm run build      # test + bundle everything into a single self-contained dist/index.html
+npm start          # http://localhost:8000
+npm test           # validates every city's data (structure, arithmetic, sources, reported changes)
+npm run build      # test + bundle into one self-contained dist/index.html
 ```
 
-`dist/index.html` is one file that opens straight from disk and can be dropped on any static host
-(e.g. GitHub Pages).
+`dist/index.html` opens straight from disk and can be dropped on any static host (e.g. GitHub Pages).
+Use `?city=<id>` to pick a city once there is more than one.
+
+## Adding a city or a new budget year
+
+- **New city:** copy `data/cities/_template.json` to `data/cities/<id>.json`, fill it in, add it to
+  `data/cities/index.json`, and run `npm test`. The full schema is in [`docs/DATA_SCHEMA.md`](docs/DATA_SCHEMA.md).
+- **New year (e.g. Toronto 2027):** add `"2027"` to each program's `net`, bump `meta.baseYear` / `compareYear`,
+  update the headline, promises, outcomes, timeline and `checks.reportedChanges`, then `npm run build`.
+- `scripts/fetch_open_data.py` lists and downloads Toronto's machine-readable budget files.
+
+[`docs/PLATFORM.md`](docs/PLATFORM.md) covers the plan for making this a general platform for any city.
 
 ## Project layout
 
 ```
-index.html                 page structure
-styles.css                 design tokens (light + dark), layout
-src/model.js               pure calculations (deltas, tax estimate, fees), shared with tests
-src/charts.js              small SVG charts (bars, stacked columns, segmented bar) + tooltips
-src/format.js              number formatting
-src/app.js                 renders each section from the data
-data/toronto-budget.json   the dataset: every figure, with source ids
-scripts/validate-data.mjs  consistency checks (run by npm test)
-scripts/build.mjs          single-file bundler
-scripts/fetch_open_data.py lists/downloads the City's budget datasets from Toronto Open Data
+index.html                  page structure (city-agnostic)
+styles.css                  design tokens (light + dark), layout
+src/model.js                pure calculations (deltas, per-household, tax, promises, outcomes), shared with tests
+src/charts.js               small SVG charts + tooltips
+src/app.js                  renders every section from the city data
+src/format.js               number formatting
+data/cities/index.json      list of cities
+data/cities/toronto.json    Toronto 2025 → 2026, with every figure's source
+data/cities/_template.json  starting point for a new city
+scripts/validate-data.mjs   data checks (npm test)
+scripts/build.mjs           single-file bundler
+docs/                       schema and platform notes
 ```
-
-## Updating for the 2027 budget
-
-The page is driven entirely by `data/toronto-budget.json`:
-
-1. Add a `"2027"` value to each program's `net` object, and update `basis`, `basisNote`,
-   `highlights` and `sources`.
-2. Set `meta.baseYear` to `2026` and `meta.compareYear` to `2027`; update `headline`, `gapClosing`,
-   `revenue2026`, `taxHistory`, `timeline` and `inYear`.
-3. Update the expected changes in `scripts/validate-data.mjs`, then run `npm run build`.
-
-The best primary sources are each division's **Budget Notes** (toronto.ca/budget) and the Council
-decision on the budget. `scripts/fetch_open_data.py` can pull the City's machine-readable budget files.
 
 ## Caveats
 
-- The 13 services shown are the large, resident-facing ones. The full budget also includes debt
-  service, corporate accounts and smaller divisions.
-- "Net" is the City-funded share after each program's own revenue. A drop in net can come from either
-  a cut or new outside revenue, so it does not by itself mean less service.
-- The "where your tax goes" split is illustrative: it is proportional to the net budgets of the shown
-  services, not an official tax receipt.
-- Figures were compiled in November 2026 from City documents and news coverage. Corrections are welcome.
+- "Net" is the city-funded share after each program's own revenue. A drop can come from a cut or from new
+  outside revenue.
+- Per-household figures divide by the household count to show scale; they are not what any one household pays.
+- "Not yet verified" means no public evidence was found either way. It does not mean broken.
+- Toronto figures were compiled in November 2026 from City documents, service reports and news coverage.
+  Corrections are welcome.
 
-This is an independent, non-partisan project and is not affiliated with the City of Toronto.
+Independent and non-partisan; not affiliated with any government.
