@@ -1,0 +1,13 @@
+{
+  "name": "gov-budget-analyzer",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A plain-language visualizer of what changed in the City of Toronto budget, year over year.",
+  "type": "module",
+  "scripts": {
+    "start": "python3 -m http.server 8000",
+    "test": "node scripts/validate-data.mjs",
+    "build": "node scripts/validate-data.mjs && node scripts/build.mjs"
+  },
+  "license": "MIT"
+}
